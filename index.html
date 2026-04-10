@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="https://bling-network.com/uploads/FAVICON.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bling Network — Something New is Coming</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ─── CSS VARIABLES ─────────────────────────────────── */
+    :root {
+      --white: #ffffff;
+      --blue: #030081;
+      --blue-mid: #0400b8;
+      --blue-light: #0500e633;
+      --green: #d1d70d;
+      --green-dim: #d1d70d55;
+      --dark: #01004a;
+      --font-display: 'Montserrat', sans-serif;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    /* ─── RESET ─────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--blue);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CUSTOM CURSOR ──────────────────────────────────── */
+    #cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 14px;
+      height: 14px;
+      background: var(--blue);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%) rotate(45deg);
+      transition: width .2s, height .2s, border-radius .2s, background .2s;
+    }
+
+    #cursor-ring {
+      display: none;
+    }
+
+    body.cursor-hover #cursor-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: var(--green);
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ──────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: .35;
+    }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 48px;
+      background: transparent;
+      transition: background .4s, backdrop-filter .4s, padding .4s;
+    }
+
+    nav.scrolled {
+      background: rgba(255, 255, 255, .88);
+      backdrop-filter: blur(16px);
+      padding: 14px 48px;
+      box-shadow: 0 1px 0 rgba(3, 0, 129, .1);
+    }
+
+    .nav-logo {
+      height: 42px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-logo img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-link {
+      font-family: var(--font-display);
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 3px;
+      cursor: none;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--green);
+      transition: width .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* ─── HERO SECTION ───────────────────────────────────── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    /* Geometric background shapes */
+    .geo-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .geo-bg .circle-1 {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(3, 0, 129, .07);
+      top: -200px;
+      right: -200px;
+      animation: slow-spin 40s linear infinite;
+    }
+
+    .geo-bg .circle-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(209, 215, 13, .12);
+      bottom: -150px;
+      left: -150px;
+      animation: slow-spin 60s linear infinite reverse;
+    }
+
+    .geo-bg .circle-3 {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 1px solid rgba(3, 0, 129, .05);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-ring 6s ease-in-out infinite;
+    }
+
+    .geo-bg .dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(3, 0, 129, .06) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    .geo-bg .glow-blob {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(3, 0, 129, .05) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulse-glow 8s ease-in-out infinite;
+    }
+
+    @keyframes slow-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse-ring {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: .5;
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: .15;
+      }
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        opacity: .6;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+    }
+
+    /* Construction badge */
+    .construction-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(3, 0, 129, .06);
+      border: 1px solid rgba(3, 0, 129, .15);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-family: var(--font-display);
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up .8s .3s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .construction-badge .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 1.8s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .2;
+      }
+    }
+
+    /* Logo hero */
+    .hero-logo-wrap {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: logo-entrance 1.2s .5s cubic-bezier(.34, 1.56, .64, 1) forwards;
+    }
+
+    .hero-logo-wrap img {
+      width: 280px;
+      height: 140px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 32px rgba(3, 0, 129, .18));
+    }
+
+    @keyframes logo-entrance {
+      from {
+        opacity: 0;
+        transform: scale(.6) translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* Headline */
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      line-height: .95;
+      letter-spacing: -.03em;
+      color: var(--blue);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fade-up .9s .8s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .hero-headline .accent-line {
+      display: block;
+      color: var(--blue);
+      position: relative;
+    }
+
+    .hero-headline .accent-line::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--green);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: line-reveal 1s 1.6s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    @keyframes line-reveal {
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    /* Slogan typewriter */
+    .hero-slogan {
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+      letter-spacing: .02em;
+      color: rgba(3, 0, 129, .65);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 48px;
+      min-height: 2em;
+      opacity: 0;
+      animation: fade-up .8s 1s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .typewriter-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--green);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: cursor-blink .8s ease-in-out infinite;
+    }
+
+    @keyframes cursor-blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* Under construction message */
+    .under-construction-msg {
+      position: relative;
+      z-index: 1;
+      max-width: 580px;
+      margin: 0 auto 56px;
+      opacity: 0;
+      animation: fade-up .8s 1.1s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .under-construction-msg p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(3, 0, 129, .7);
+    }
+
+    .under-construction-msg strong {
+      font-weight: 500;
+      color: var(--blue);
+    }
+
+    /* Countdown */
+    .countdown-wrap {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up .8s 1.2s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .countdown-card {
+      background: var(--blue);
+      border-radius: 16px;
+      padding: 20px 24px;
+      min-width: 90px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .countdown-card:hover {
+      transform: translateY(-6px) scale(1.04);
+    }
+
+    .countdown-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--green);
+    }
+
+    .countdown-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 2.4rem;
+      color: var(--white);
+      line-height: 1;
+      display: block;
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .countdown-label {
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 6px;
+      display: block;
+    }
+
+    .countdown-flip {
+      animation: flip .4s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    @keyframes flip {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* CTA Button */
+    .cta-wrap {
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fade-up .8s 1.4s cubic-bezier(.4, 0, .2, 1) forwards;
+    }
+
+    .btn-register {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--blue);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 18px 44px;
+      border-radius: 100px;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      cursor: none;
+      box-shadow: 0 8px 32px rgba(3, 0, 129, .3), 0 0 0 0 rgba(209, 215, 13, 0);
+      transition: box-shadow .4s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .btn-register:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 16px 48px rgba(3, 0, 129, .4), 0 0 0 6px rgba(209, 215, 13, .2);
+    }
+
+    .btn-register .btn-ripple {
+      position: absolute;
+      inset: 0;
+      background: var(--green);
+      border-radius: inherit;
+      transform: scale(0);
+      transform-origin: center;
+      opacity: .25;
+      transition: transform .5s cubic-bezier(.4, 0, .2, 1), opacity .5s;
+    }
+
+    .btn-register:hover .btn-ripple {
+      transform: scale(2);
+      opacity: 0;
+    }
+
+    .btn-register .btn-arrow {
+      width: 20px;
+      height: 20px;
+      transition: transform .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .btn-register:hover .btn-arrow {
+      transform: translateX(5px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: var(--blue);
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: .85rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(3, 0, 129, .2);
+      margin-left: 16px;
+      cursor: none;
+      transition: border-color .3s, background .3s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--blue);
+      background: rgba(3, 0, 129, .04);
+      transform: translateY(-3px);
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ─── EVENT SECTION ──────────────────────────────────── */
+    #event {
+      background: var(--blue);
+      padding: 100px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #event::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: var(--white);
+      clip-path: ellipse(55% 100% at 50% 0%);
+    }
+
+    #event::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: var(--white);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .event-bg-circle {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .04);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .event-bg-circle-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(209, 215, 13, .08);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .event-inner {
+      position: relative;
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .event-kicker {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .event-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 24px;
+      letter-spacing: -.02em;
+    }
+
+    .event-title span {
+      color: var(--green);
+    }
+
+    .event-hook {
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, .72);
+      max-width: 600px;
+      margin: 0 auto 44px;
+    }
+
+    .event-hook strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .event-details {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+
+    .event-detail {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .9rem;
+      color: rgba(255, 255, 255, .6);
+    }
+
+    .event-detail svg {
+      width: 18px;
+      height: 18px;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .event-detail strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .btn-event {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--green);
+      color: var(--blue);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 20px 52px;
+      border-radius: 100px;
+      border: none;
+      cursor: none;
+      box-shadow: 0 8px 32px rgba(209, 215, 13, .25);
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-event:hover {
+      transform: translateY(-5px) scale(1.04);
+      box-shadow: 0 16px 48px rgba(209, 215, 13, .35);
+    }
+
+    .btn-event::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .15);
+      border-radius: inherit;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .btn-event:hover::before {
+      transform: scaleX(1);
+    }
+
+    /* ─── BRAND SECTION ──────────────────────────────────── */
+    #brand {
+      padding: 100px 24px;
+      background: var(--white);
+    }
+
+    .brand-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 16px;
+      display: block;
+      /* green as accent — though small, still the 5% accent rule */
+    }
+
+    /* Note: green used sparingly as accent only — maintains 5% rule */
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--blue);
+      margin-bottom: 60px;
+      letter-spacing: -.02em;
+    }
+
+    .brand-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .brand-card {
+      border: 1.5px solid rgba(3, 0, 129, .1);
+      border-radius: 20px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .4s cubic-bezier(.34, 1.56, .64, 1), border-color .3s, box-shadow .4s;
+      opacity: 0;
+      transform: translateY(32px);
+    }
+
+    .brand-card.visible {
+      animation: card-in .7s cubic-bezier(.34, 1.56, .64, 1) forwards;
+    }
+
+    @keyframes card-in {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .brand-card:hover {
+      transform: translateY(-8px) scale(1.01);
+      border-color: rgba(3, 0, 129, .3);
+      box-shadow: 0 20px 60px rgba(3, 0, 129, .1);
+    }
+
+    .brand-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--green);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .brand-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .brand-card-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(3, 0, 129, .06);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      transition: background .3s, transform .4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .brand-card:hover .brand-card-icon {
+      background: var(--blue);
+      transform: rotate(-5deg) scale(1.1);
+    }
+
+    .brand-card-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--blue);
+    }
+
+    .brand-card:hover .brand-card-icon svg {
+      color: var(--white);
+    }
+
+    .brand-card h3 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--blue);
+      margin-bottom: 10px;
+      letter-spacing: -.01em;
+    }
+
+    .brand-card p {
+      font-size: .92rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(3, 0, 129, .65);
+    }
+
+
+    /* ─── JOIN NETWORK SECTION ──────────────────────────── */
+    #join {
+      background: var(--blue);
+      padding: 100px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #join::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: var(--white);
+      clip-path: ellipse(55% 100% at 50% 0%);
+    }
+
+    #join::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: var(--white);
+      clip-path: ellipse(55% 100% at 50% 100%);
+    }
+
+    .join-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .join-kicker {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .join-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      margin-bottom: 8px;
+    }
+
+    .join-title-underline {
+      display: inline;
+      position: relative;
+    }
+
+    .join-title-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--green);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .9s .3s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .join-title-underline.visible::after {
+      transform: scaleX(1);
+    }
+
+    .join-body {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, .7);
+      margin: 24px auto 52px;
+      max-width: 600px;
+    }
+
+    /* ── Connected nodes ── */
+    .join-nodes {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 52px;
+      flex-wrap: nowrap;
+    }
+
+    .join-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+      width: 120px;
+    }
+
+    .jnode-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, .2);
+      background: rgba(255, 255, 255, .06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .5s ease, border-color .5s ease, box-shadow .5s ease;
+    }
+
+    .jnode-circle svg {
+      width: 36px;
+      height: 36px;
+      stroke: rgba(255, 255, 255, .4);
+      transition: stroke .5s ease;
+    }
+
+    .jnode-label {
+      font-family: var(--font-display);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      transition: color .5s ease;
+    }
+
+    /* Active state — green */
+    .join-node.active .jnode-circle {
+      background: rgba(209, 215, 13, .15);
+      border-color: var(--green);
+      box-shadow: 0 0 28px rgba(209, 215, 13, .3);
+    }
+
+    .join-node.active .jnode-circle svg {
+      stroke: var(--green);
+    }
+
+    .join-node.active .jnode-label {
+      color: var(--green);
+    }
+
+    /* Connector lines */
+    .join-connector {
+      flex: 1;
+      max-width: 120px;
+      min-width: 40px;
+      height: 2px;
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .jconnector-line {
+      width: 100%;
+      height: 100%;
+      background: var(--green);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .5s cubic-bezier(.4, 0, .2, 1);
+      border-radius: 2px;
+    }
+
+    .join-connector.active .jconnector-line {
+      transform: scaleX(1);
+    }
+
+    .btn-join {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--green);
+      color: var(--blue);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 18px 44px;
+      border-radius: 100px;
+      cursor: none;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(209, 215, 13, .2);
+      transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s;
+    }
+
+    .btn-join:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 16px 48px rgba(209, 215, 13, .35);
+    }
+
+    .btn-join::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .15);
+      border-radius: inherit;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .btn-join:hover::before {
+      transform: scaleX(1);
+    }
+
+    @media(max-width:600px) {
+      .join-nodes {
+        gap: 0;
+        padding: 0 8px;
+      }
+
+      .join-node {
+        width: 80;
+      }
+
+      .jnode-circle {
+        width: 54px;
+        height: 54px;
+      }
+
+      .jnode-circle svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .jnode-label {
+        font-size: .58rem;
+        letter-spacing: .04em;
+      }
+
+      .join-connector {
+        max-width: 24px;
+        min-width: 12px;
+      }
+    }
+
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      background: var(--blue);
+      padding: 56px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+    }
+
+    .footer-logo {
+      height: 70px;
+      margin-bottom: 24px;
+      opacity: .9;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .footer-social a {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, .08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .3s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+      cursor: none;
+    }
+
+    .footer-social a:hover {
+      background: rgba(255, 255, 255, .18);
+      transform: translateY(-4px) scale(1.1);
+    }
+
+    .footer-social svg {
+      width: 18px;
+      height: 18px;
+      fill: rgba(255, 255, 255, .7);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      font-family: var(--font-display);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .45);
+      text-decoration: none;
+      transition: color .25s;
+      cursor: none;
+    }
+
+    .footer-link:hover {
+      color: var(--green);
+    }
+
+    .footer-copy {
+      font-size: .78rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, .3);
+      letter-spacing: .04em;
+    }
+
+    /* ─── SCROLL REVEAL UTILITY ─────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .8s cubic-bezier(.4, 0, .2, 1), transform .8s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: .1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: .2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: .3s;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media(max-width:768px) {
+      nav {
+        padding: 20px 24px;
+      }
+
+      nav.scrolled {
+        padding: 12px 24px;
+      }
+
+      .nav-logo img {
+        height: 34px;
+      }
+
+      .hero-headline {
+        font-size: 2.4rem;
+      }
+
+      .countdown-wrap {
+        gap: 6px;
+        flex-wrap: nowrap;
+      }
+
+      .countdown-card {
+        min-width: 0px;
+        flex: 1;
+        padding: 14px 8px;
+      }
+
+      .countdown-number {
+        font-size: 1.6rem;
+      }
+
+      .btn-secondary {
+        margin-left: 0;
+        margin-top: 12px;
+      }
+
+      .cta-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .event-details {
+        gap: 18px;
+      }
+
+      #event::before,
+      #event::after {
+        height: 60px;
+      }
+
+      body {
+        cursor: auto;
+      }
+
+      #cursor-dot,
+      #cursor-ring {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Navigation -->
+  <nav id="main-nav">
+    <div class="nav-logo">
+      <img src="https://bling-network.com/uploads/Logo-de-Bling-2026_Transparencia.png" alt="Bling Network">
+    </div>
+    <a href="social-media.html" class="nav-link">Connect →</a>
+  </nav>
+
+  <!-- ── HERO ─────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="geo-bg">
+      <div class="dot-grid"></div>
+      <div class="glow-blob"></div>
+      <div class="circle-1"></div>
+      <div class="circle-2"></div>
+      <div class="circle-3"></div>
+    </div>
+
+    <div class="construction-badge">
+      <span class="badge-dot"></span>
+      Building the new experience
+    </div>
+
+    <div class="hero-logo-wrap">
+      <img src="https://bling-network.com/uploads/Logo-de-Bling-2026_Transparencia.png" alt="Bling Network">
+    </div>
+
+    <h1 class="hero-headline">
+      Where Trusted<br>
+      <span class="accent-line">Connections Grow.</span>
+    </h1>
+
+    <p class="hero-slogan">
+      <span id="typewriter"></span><span class="typewriter-cursor"></span>
+    </p>
+
+    <div class="under-construction-msg">
+      <p>We’re shaping a <strong>new digital experience</strong> — more intuitive, more connected, and built around what
+        defines us today. Our new platform is on its way, designed to strengthen relationships and unlock real business
+        opportunities, with a fresh look that reflects who we truly are: a <strong>global ecosystem built on trust and
+          growth</strong></p>
+    </div>
+
+
+    <!-- Countdown to Intermodal 2026 -->
+    <div class="countdown-wrap" id="countdown">
+      <div class="countdown-card">
+        <span class="countdown-number" id="cd-days">00</span>
+        <span class="countdown-label">Days</span>
+      </div>
+      <div class="countdown-card">
+        <span class="countdown-number" id="cd-hours">00</span>
+        <span class="countdown-label">Hours</span>
+      </div>
+      <div class="countdown-card">
+        <span class="countdown-number" id="cd-mins">00</span>
+        <span class="countdown-label">Minutes</span>
+      </div>
+      <div class="countdown-card">
+        <span class="countdown-number" id="cd-secs">00</span>
+        <span class="countdown-label">Seconds</span>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <a href="https://blinglogisticsnetwork.com/costa-rica-registration-form/" target="_blank" class="btn-register">
+        <div class="btn-ripple"></div>
+        Register for Bling Summit Costa Rica 2026
+        <svg class="btn-arrow" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </a>
+      <a href="social-media.html" class="btn-secondary">
+        Our Socials →
+      </a>
+    </div>
+  </section>
+
+  <!-- ── EVENT SECTION ─────────────────────────────────────── -->
+  <section id="event">
+    <div class="event-bg-circle"></div>
+    <div class="event-bg-circle-2"></div>
+    <div class="event-inner">
+      <span class="event-kicker reveal">Upcoming Event</span>
+      <h2 class="event-title reveal reveal-delay-1">
+        Bling Summit<br><span>Costa Rica 2026</span>
+      </h2>
+      <p class="event-hook reveal reveal-delay-2">
+        Real business starts with the right connections.
+        Join Bling Summit Costa Rica and be part of a network built on trust, collaboration, and global
+        growth.
+      </p>
+
+      <div class="event-details reveal reveal-delay-2">
+        <div class="event-detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <path d="M16 2v4M8 2v4M3 10h18" />
+          </svg>
+          <span><strong>San José, Costa Rica</strong> — Marriott Hotel Hacienda Belén</span>
+        </div>
+        <div class="event-detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+          <span>4 days of logistics, connections &amp; innovation</span>
+        </div>
+        <div class="event-detail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+          </svg>
+          <span>Global freight &amp; supply chain leaders</span>
+        </div>
+      </div>
+      <a href="https://blinglogisticsnetwork.com/costa-rica-registration-form/" target="_blank"
+        class="btn-event reveal reveal-delay-3">
+        Secure Your Spot Now
+        <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+          <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── BRAND PROMISE SECTION ─────────────────────────────── -->
+  <section id="brand">
+    <div class="brand-inner">
+      <span class="section-label reveal">Who We Are</span>
+      <h2 class="section-title reveal reveal-delay-1">A new era of<br>logistics excellence.</h2>
+      <div class="brand-cards">
+        <div class="brand-card">
+          <div class="brand-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+            </svg>
+          </div>
+          <h3>Verified Global Network</h3>
+          <p>A global presence built with intention — not volume. We connect you to a verified network of trusted
+            partners across key markets, where every connection is built to generate real business.</p>
+        </div>
+        <div class="brand-card">
+          <div class="brand-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+          </div>
+          <h3>Agile & Modern Platform</h3>
+          <p>Built for today’s logistics reality. Our technology enables fast, transparent, and efficient collaboration
+            — simplifying how members connect and operate across borders.</p>
+        </div>
+        <div class="brand-card">
+          <div class="brand-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path
+                d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+            </svg>
+          </div>
+          <h3>People-Driven Relationships</h3>
+          <p>Business moves through people. We foster trust, human support, and long-term partnerships that drive
+            consistent, sustainable growth.</p>
+        </div>
+        <div class="brand-card">
+          <div class="brand-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 2L3 6v6c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V6L12 2z" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M8.5 12l2.5 2.5 4.5-4.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <h3>Secure & Reliable Business Environment</h3>
+          <p>Confidence is built into every interaction. With structured trust and payment protection, we reduce risk —
+            enabling safer, more predictable global business.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── JOIN THE NETWORK ──────────────────────────────────── -->
+  <section id="join">
+    <div class="join-inner">
+
+      <span class="join-kicker reveal">Join the Network</span>
+      <h2 class="join-title reveal reveal-delay-1">
+        Your next great business relationship is one connection away.
+      </h2>
+      <p class="join-body reveal reveal-delay-2">
+        Bling Network brings together trusted agents from across the globe. Every member is a door to new markets, new
+        opportunities, and long-term business growth built on real relationships.
+      </p>
+
+      <!-- Connected nodes -->
+      <div class="join-nodes reveal reveal-delay-3">
+
+        <div class="join-node" id="jnode-1">
+          <div class="jnode-circle">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+            </svg>
+          </div>
+          <span class="jnode-label">Global Reach</span>
+        </div>
+
+        <div class="join-connector" id="jconnector-1">
+          <div class="jconnector-line"></div>
+        </div>
+
+        <div class="join-node" id="jnode-2">
+          <div class="jnode-circle">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <path d="M12 2L3 6v6c0 5.25 3.75 10.15 9 11.25C17.25 22.15 21 17.25 21 12V6L12 2z" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M8.5 12l2.5 2.5 4.5-4.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <span class="jnode-label">Verified Partners</span>
+        </div>
+
+        <div class="join-connector" id="jconnector-2">
+          <div class="jconnector-line"></div>
+        </div>
+
+        <div class="join-node" id="jnode-3">
+          <div class="jnode-circle">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 12v4M10 14h4" />
+            </svg>
+          </div>
+          <span class="jnode-label">Trusted Transactions</span>
+        </div>
+
+      </div>
+
+      <div class="reveal reveal-delay-3">
+        <a href="https://blinglogisticsnetwork.com/register/" target="_blank" class="btn-join">
+          Become a Member
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer>
+    <img class="footer-logo" src="https://bling-network.com/uploads/Logo-de-Bling-blanco-transparente.png"
+      alt="Bling Network">
+    <div class="footer-social">
+      <a href="https://www.instagram.com/blingnetworkofficial/" aria-label="Instagram">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+        </svg>
+      </a>
+      <a href="https://www.linkedin.com/company/33248171/admin/dashboard/" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61587426698196" aria-label="Facebook">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+        </svg>
+      </a>
+      <a href="https://www.youtube.com/@blinglogisticsnetwork" aria-label="YouTube">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+      </a>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link">Connect With Us</a>
+      <a href="https://blinglogisticsnetwork.com/costa-rica-registration-form/" class="footer-link">Register — Bling
+        Summit Costa Rica 2026</a>
+    </div>
+    <p class="footer-copy">© 2026 Bling Network. All rights reserved.</p>
+  </footer>
+
+  <script>
+    /* ── CURSOR ── */
+    const dot = document.getElementById('cursor-dot');
+    document.addEventListener('mousemove', e => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a,button,.countdown-card,.brand-card').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+    });
+
+    /* ── NAV SCROLL ── */
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ── TYPEWRITER ── */
+    const phrases = [
+      'A new era of logistics.',
+      'Moving freight. Building futures.',
+      'Your global network starts here.',
+      'Connecting every corner of the world.'
+    ];
+    let pi = 0, ci = 0, deleting = false;
+    const tw = document.getElementById('typewriter');
+    function type() {
+      const phrase = phrases[pi];
+      if (!deleting) {
+        tw.textContent = phrase.slice(0, ci + 1); ci++;
+        if (ci === phrase.length) { deleting = true; setTimeout(type, 2200); return; }
+      } else {
+        tw.textContent = phrase.slice(0, ci - 1); ci--;
+        if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; setTimeout(type, 400); return; }
+      }
+      setTimeout(type, deleting ? 45 : 70);
+    }
+    setTimeout(type, 1800);
+
+    /* ── COUNTDOWN ── */
+    const target = new Date('2026-05-11T08:00:00');
+    const els = { d: document.getElementById('cd-days'), h: document.getElementById('cd-hours'), m: document.getElementById('cd-mins'), s: document.getElementById('cd-secs') };
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function flipEl(el, val) {
+      const next = pad(val);
+      if (el.textContent !== next) { el.textContent = next; el.classList.remove('countdown-flip'); void el.offsetWidth; el.classList.add('countdown-flip'); }
+    }
+    function tick() {
+      const now = new Date(); const diff = target - now;
+      if (diff <= 0) { Object.values(els).forEach(e => e.textContent = '00'); return; }
+      flipEl(els.d, Math.floor(diff / 864e5));
+      flipEl(els.h, Math.floor((diff % 864e5) / 36e5));
+      flipEl(els.m, Math.floor((diff % 36e5) / 6e4));
+      flipEl(els.s, Math.floor((diff % 6e4) / 1e3));
+    }
+    tick(); setInterval(tick, 1000);
+
+    /* ── SCROLL REVEAL ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: .15 });
+    document.querySelectorAll('.reveal,.brand-card').forEach(el => observer.observe(el));
+
+    /* ── PARALLAX HERO ── */
+    const heroLogo = document.querySelector('.hero-logo-wrap');
+    const heroHead = document.querySelector('.hero-headline');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (heroLogo) heroLogo.style.transform = `translateY(${y * .12}px)`;
+      if (heroHead) heroHead.style.transform = `translateY(${y * .06}px)`;
+    });
+
+    /* ── MOUSE PARALLAX on HERO ── */
+    const heroBg = document.querySelector('.geo-bg');
+    document.getElementById('hero').addEventListener('mousemove', e => {
+      const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+      const x = (e.clientX - left - width / 2) / width;
+      const y = (e.clientY - top - height / 2) / height;
+      heroBg.style.transform = `translate(${x * 18}px,${y * 12}px)`;
+    });
+    document.getElementById('hero').addEventListener('mouseleave', () => {
+      heroBg.style.transform = 'translate(0,0)';
+    });
+
+
+    /* ── JOIN SECTION: connected nodes animation ── */
+    function runNodesAnimation() {
+      const nodes = [document.getElementById('jnode-1'), document.getElementById('jnode-2'), document.getElementById('jnode-3')];
+      const connectors = [document.getElementById('jconnector-1'), document.getElementById('jconnector-2')];
+      const underline = document.querySelector('.join-title-underline');
+
+      // Reset
+      nodes.forEach(n => n && n.classList.remove('active'));
+      connectors.forEach(c => c && c.classList.remove('active'));
+
+      // Sequence: node1 → line1 → node2 → line2 → node3
+      setTimeout(() => nodes[0] && nodes[0].classList.add('active'), 300);
+      setTimeout(() => connectors[0] && connectors[0].classList.add('active'), 900);
+      setTimeout(() => nodes[1] && nodes[1].classList.add('active'), 1400);
+      setTimeout(() => connectors[1] && connectors[1].classList.add('active'), 2000);
+      setTimeout(() => nodes[2] && nodes[2].classList.add('active'), 2500);
+      if (underline) setTimeout(() => underline.classList.add('visible'), 400);
+    }
+
+    const joinObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          runNodesAnimation();
+          // Loop the node animation every 4.5s while in view
+          const loop = setInterval(() => {
+            if (!document.getElementById('join')) return clearInterval(loop);
+            runNodesAnimation();
+          }, 4500);
+          joinObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    const joinSection = document.getElementById('join');
+    if (joinSection) joinObserver.observe(joinSection);
+  </script>
+</body>
+
+</html>
