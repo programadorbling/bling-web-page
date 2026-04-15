@@ -1,0 +1,486 @@
+/* ═══════════════════════════════════════════════════════════
+   BLING NETWORK — BASE STYLESHEET
+   Shared across all pages: variables, reset, cursor, nav,
+   footer, scroll reveal, buttons, section labels, noise overlay
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── CSS VARIABLES ─────────────────────────────────────── */
+:root {
+  --white: #ffffff;
+  --blue: #030081;
+  --blue-mid: #0400b8;
+  --blue-light: #0500e633;
+  --green: #d1d70d;
+  --green-dim: #d1d70d55;
+  --dark: #01004a;
+  --font-display: 'Montserrat', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
+}
+
+/* ─── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--white);
+  color: var(--blue);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ──────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: .35;
+}
+
+/* ─── CUSTOM CURSOR ──────────────────────────────────────── */
+#cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  background: var(--blue);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width .2s, height .2s, border-radius .2s, background .2s;
+}
+
+/* social-media.html uses a ring cursor — kept here as optional layer */
+#cursor-ring {
+  display: none;
+}
+
+body.cursor-hover #cursor-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--green);
+}
+
+/* ─── NAV ────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 48px;
+  background: transparent;
+  transition: background .4s, backdrop-filter .4s, padding .4s;
+}
+
+nav.scrolled {
+  background: rgba(255, 255, 255, .88);
+  backdrop-filter: blur(16px);
+  padding: 14px 48px;
+  box-shadow: 0 1px 0 rgba(3, 0, 129, .1);
+}
+
+.nav-logo {
+  height: 42px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.nav-link {
+  font-family: var(--font-display);
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  text-decoration: none;
+  position: relative;
+  padding-bottom: 3px;
+  cursor: none;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--green);
+  transition: width .35s cubic-bezier(.4, 0, .2, 1);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+footer {
+  background: var(--blue);
+  padding: 56px 24px;
+  text-align: center;
+  position: relative;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+
+.footer-logo {
+  height: 70px;
+  margin-bottom: 24px;
+  opacity: .9;
+}
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.footer-social a {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, .08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .3s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+  cursor: none;
+}
+
+.footer-social a:hover {
+  background: rgba(255, 255, 255, .18);
+  transform: translateY(-4px) scale(1.1);
+}
+
+.footer-social svg {
+  width: 18px;
+  height: 18px;
+  fill: rgba(255, 255, 255, .7);
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  font-family: var(--font-display);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .45);
+  text-decoration: none;
+  transition: color .25s;
+  cursor: none;
+}
+
+.footer-link:hover {
+  color: var(--green);
+}
+
+.footer-copy {
+  font-size: .78rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, .3);
+  letter-spacing: .04em;
+}
+
+/* ─── SCROLL REVEAL ──────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .8s cubic-bezier(.4, 0, .2, 1),
+              transform .8s cubic-bezier(.4, 0, .2, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+.reveal-delay-4 { transition-delay: .4s; }
+
+/* ─── SECTION LABELS & TITLES ────────────────────────────── */
+.section-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 16px;
+  display: block;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--blue);
+  margin-bottom: 20px;
+  letter-spacing: -.02em;
+}
+
+/* ─── SHARED KEYFRAMES ───────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slow-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes slow-spin-simple {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: .6; transform: translate(-50%, -60%) scale(1); }
+  50%       { opacity: 1;  transform: translate(-50%, -60%) scale(1.08); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);    opacity: .5; }
+  50%       { transform: translate(-50%, -50%) scale(1.15); opacity: .15; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .2; }
+}
+
+@keyframes line-reveal {
+  to { transform: scaleX(1); }
+}
+
+@keyframes card-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes logo-entrance {
+  from { opacity: 0; transform: scale(.6) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─── SHARED BUTTONS ─────────────────────────────────────── */
+
+/* Blue pill — primary action on white backgrounds */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--blue);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 16px 36px;
+  border-radius: 100px;
+  position: relative;
+  overflow: hidden;
+  cursor: none;
+  box-shadow: 0 8px 32px rgba(3, 0, 129, .28);
+  transition: box-shadow .4s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 48px rgba(3, 0, 129, .38), 0 0 0 6px rgba(209, 215, 13, .2);
+}
+
+.btn-primary .btn-ripple {
+  position: absolute;
+  inset: 0;
+  background: var(--green);
+  border-radius: inherit;
+  transform: scale(0);
+  transform-origin: center;
+  opacity: .25;
+  transition: transform .5s cubic-bezier(.4, 0, .2, 1), opacity .5s;
+}
+
+.btn-primary:hover .btn-ripple {
+  transform: scale(2);
+  opacity: 0;
+}
+
+/* Outline — secondary action on white backgrounds */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--blue);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .82rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(3, 0, 129, .22);
+  cursor: none;
+  transition: border-color .3s, background .3s, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.btn-outline:hover {
+  border-color: var(--blue);
+  background: rgba(3, 0, 129, .04);
+  transform: translateY(-3px);
+}
+
+/* Green pill — primary CTA on blue backgrounds */
+.btn-green {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--green);
+  color: var(--blue);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 20px 52px;
+  border-radius: 100px;
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(209, 215, 13, .25);
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s;
+}
+
+.btn-green:hover {
+  transform: translateY(-5px) scale(1.04);
+  box-shadow: 0 16px 48px rgba(209, 215, 13, .38);
+}
+
+.btn-green::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, .18);
+  border-radius: inherit;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.btn-green:hover::before {
+  transform: scaleX(1);
+}
+
+/* ─── SECTION WAVE TRANSITIONS (blue sections) ───────────── */
+/* Apply to any blue-bg section that needs top/bottom wave */
+.wave-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.wave-section::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: var(--white);
+  clip-path: ellipse(55% 100% at 50% 0%);
+}
+
+.wave-section::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: var(--white);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+/* ─── RESPONSIVE BASE ────────────────────────────────────── */
+@media (max-width: 768px) {
+  nav {
+    padding: 20px 24px;
+  }
+
+  nav.scrolled {
+    padding: 12px 24px;
+  }
+
+  .nav-logo img {
+    height: 34px;
+  }
+
+  .nav-links {
+    gap: 18px;
+  }
+
+  .nav-link {
+    font-size: .72rem;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    cursor: auto;
+  }
+
+  #cursor-dot,
+  #cursor-ring {
+    display: none;
+  }
+}
