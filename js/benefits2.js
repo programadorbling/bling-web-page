@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 /* ── EXTEND CURSOR HOVER ─────────────────────────────────── */
-initCursorHover('.bene-card, .ben-pill, .profile-btn');
+initCursorHover('.bene-card, .ben-pill, .bene-nav-btn');
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    BENEFITS CAROUSEL
@@ -161,33 +161,27 @@ function buildPanel(key) {
 let activeKey = null;
 
 function openPanel(key, card) {
-  /* Same card clicked — toggle closed */
   if (activeKey === key) {
     closePanel();
     return;
   }
 
-  /* Update active card state */
   cards.forEach(c => c.classList.remove('active'));
   card.classList.add('active');
   activeKey = key;
 
-  /* Inject content and open */
   panel.className = `bene-panel${key === 'payment' ? ' payment-panel' : ''}`;
   panel.innerHTML = buildPanel(key);
 
-  /* Extend cursor hover to new panel links */
   panel.querySelectorAll('a').forEach(el => {
     el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
   });
 
-  /* Small delay lets CSS paint before transition triggers */
   requestAnimationFrame(() => {
     requestAnimationFrame(() => panel.classList.add('open'));
   });
 
-  /* Scroll card into comfortable view */
   card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 }
 
@@ -195,15 +189,12 @@ function closePanel() {
   panel.classList.remove('open');
   cards.forEach(c => c.classList.remove('active'));
   activeKey = null;
-
-  /* Clear content after transition */
   setTimeout(() => { if (!panel.classList.contains('open')) panel.innerHTML = ''; }, 560);
 }
 
 /* ── Card click delegation ───────────────────────────────── */
 if (track) {
   track.addEventListener('click', e => {
-    /* Ignore clicks that happened during a drag */
     if (track.classList.contains('is-dragging')) return;
     const card = e.target.closest('.bene-card[data-benefit]');
     if (card) openPanel(card.dataset.benefit, card);
@@ -223,9 +214,9 @@ if (btnNext) btnNext.addEventListener('click', () => scrollCarousel(1));
 /* ── Progress dots ───────────────────────────────────────── */
 function updateDots() {
   if (!track || !dotsWrap) return;
-  const ratio    = track.scrollLeft / (track.scrollWidth - track.clientWidth);
-  const total    = dotsWrap.querySelectorAll('.bene-nav-dot').length;
-  const activeI  = Math.round(ratio * (total - 1));
+  const ratio   = track.scrollLeft / (track.scrollWidth - track.clientWidth);
+  const total   = dotsWrap.querySelectorAll('.bene-nav-dot').length;
+  const activeI = Math.round(ratio * (total - 1));
   dotsWrap.querySelectorAll('.bene-nav-dot').forEach((dot, i) => {
     dot.classList.toggle('active', i === activeI);
   });
@@ -233,7 +224,6 @@ function updateDots() {
 
 if (track) track.addEventListener('scroll', updateDots, { passive: true });
 
-/* Dot click — jump to approximate position */
 if (dotsWrap) {
   dotsWrap.querySelectorAll('.bene-nav-dot').forEach((dot, i, all) => {
     dot.addEventListener('click', () => {
@@ -245,35 +235,24 @@ if (dotsWrap) {
 
 /* ── Drag to scroll ──────────────────────────────────────── */
 if (track) {
-  let isPointerDown = false;
-  let startX = 0;
-  let scrollStart = 0;
-  let moved = 0;
-  const DRAG_THRESHOLD = 6; // px
+  let isDragging = false, startX = 0, scrollStart = 0;
 
   track.addEventListener('mousedown', e => {
-    isPointerDown = true;
-    moved = 0;
-    startX = e.clientX;
+    isDragging  = true;
+    startX      = e.clientX;
     scrollStart = track.scrollLeft;
-    // Nota: NO activamos is-dragging todavía
+    track.classList.add('is-dragging');
   });
 
   document.addEventListener('mousemove', e => {
-    if (!isPointerDown) return;
-
-    moved = Math.abs(e.clientX - startX);
-
-    if (moved > DRAG_THRESHOLD) {
-      track.classList.add('is-dragging');
-      track.scrollLeft = scrollStart - (e.clientX - startX);
-    }
+    if (!isDragging) return;
+    track.scrollLeft = scrollStart - (e.clientX - startX);
   });
 
   document.addEventListener('mouseup', () => {
-    if (!isPointerDown) return;
-    isPointerDown = false;
-    track.classList.remove('is-dragging');
+    if (!isDragging) return;
+    isDragging = false;
+    setTimeout(() => track.classList.remove('is-dragging'), 50);
   });
 }
 

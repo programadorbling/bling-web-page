@@ -311,11 +311,219 @@
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   BENEFITS GRID
+   OUR COMMITMENT (blue bg)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#our-commitment {
+  background: var(--blue);
+  padding: 110px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+#our-commitment::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: var(--white);
+  clip-path: ellipse(55% 100% at 50% 0%);
+}
+
+#our-commitment::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: var(--white);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+
+.commitment-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* ── Text side ── */
+.commitment-kicker {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--green);
+  display: block;
+  margin-bottom: 20px;
+}
+
+.commitment-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  margin-bottom: 24px;
+}
+
+.commitment-title span { color: var(--green); }
+
+.commitment-body {
+  font-size: .97rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, .65);
+}
+
+.commitment-body strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* Mini stats row */
+.commitment-stat-row {
+  display: flex;
+  gap: 32px;
+  margin-top: 36px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  flex-wrap: wrap;
+}
+
+.commitment-stat { display: flex; flex-direction: column; gap: 4px; }
+
+.commitment-stat-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--white);
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+
+.commitment-stat-suffix {
+  font-size: 1.2rem;
+  color: var(--green);
+}
+
+.commitment-stat-label {
+  font-family: var(--font-display);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .4);
+}
+
+/* ── Image side ── */
+.commitment-image-wrap {
+  position: relative;
+}
+
+/* Real image — shown when URL is provided */
+.commitment-image-wrap img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+  border: 1.5px solid rgba(255, 255, 255, .08);
+}
+
+/* Placeholder — remove when real image is added */
+.commitment-img-placeholder {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 20px;
+  border: 1.5px dashed rgba(255, 255, 255, .2);
+  background: rgba(255, 255, 255, .04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle dot grid on placeholder */
+.commitment-img-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, .06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.commitment-img-placeholder-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(209, 215, 13, .3);
+  background: rgba(209, 215, 13, .08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.commitment-img-placeholder-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--green);
+}
+
+.commitment-img-placeholder-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .4);
+  position: relative;
+  z-index: 1;
+}
+
+.commitment-img-placeholder-hint {
+  font-size: .7rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, .25);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .commitment-inner {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  /* Image goes below text on mobile */
+  .commitment-image-wrap { order: 2; }
+  .commitment-text       { order: 1; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BENEFITS CAROUSEL
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #benefits-grid {
-  padding: 100px 24px;
+  padding: 100px 0;
   background: var(--white);
+  overflow: hidden;
 }
 
 .benefits-grid-inner {
@@ -325,7 +533,8 @@
 
 .benefits-grid-header {
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 56px;
+  padding: 0 24px;
 }
 
 .benefits-grid-header .section-title {
@@ -341,47 +550,82 @@
   margin: 0 auto;
 }
 
-/* Asymmetric grid: 2 cols, some cards span full width */
-.bene-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-/* ── Benefit card base ── */
-.bene-card {
-  border: 1.5px solid rgba(3, 0, 129, .1);
-  border-radius: 24px;
-  padding: 40px 36px;
+/* ── CAROUSEL WRAPPER ── */
+.bene-carousel-outer {
   position: relative;
-  overflow: hidden;
-  background: var(--white);
-  cursor: default;
-  transition: transform .4s cubic-bezier(.34, 1.56, .64, 1),
-              border-color .3s,
-              box-shadow .4s,
-              background .3s;
-  opacity: 0;
-  transform: translateY(32px);
 }
 
-.bene-card.visible {
-  animation: card-in .7s cubic-bezier(.34, 1.56, .64, 1) forwards;
-}
-
-.bene-card:hover {
-  transform: translateY(-8px) scale(1.01);
-  border-color: rgba(3, 0, 129, .25);
-  box-shadow: 0 24px 64px rgba(3, 0, 129, .1);
-}
-
-/* Green top bar on hover */
-.bene-card::before {
+/* Fade edges */
+.bene-carousel-outer::before,
+.bene-carousel-outer::after {
   content: '';
   position: absolute;
   top: 0;
+  bottom: 100px; /* stop fade above nav arrows */
+  width: 60px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.bene-carousel-outer::before {
   left: 0;
+  background: linear-gradient(to right, var(--white), transparent);
+}
+
+.bene-carousel-outer::after {
   right: 0;
+  background: linear-gradient(to left, var(--white), transparent);
+}
+
+/* Scroll track */
+.bene-carousel-track {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 16px 48px 24px;
+  cursor: grab;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;        /* Firefox */
+}
+
+.bene-carousel-track::-webkit-scrollbar { display: none; }
+.bene-carousel-track.is-dragging        { cursor: grabbing; scroll-behavior: auto; }
+
+/* ── COMPACT CARD (collapsed state) ── */
+.bene-card {
+  flex: 0 0 200px;
+  min-height: 220px;
+  border: 1.5px solid rgba(3, 0, 129, .1);
+  border-radius: 20px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  background: var(--white);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  transition: flex .55s cubic-bezier(.4, 0, .2, 1),
+              border-color .3s,
+              box-shadow .4s,
+              background .3s,
+              transform .35s cubic-bezier(.34, 1.56, .64, 1);
+  opacity: 0;
+  transform: translateY(24px);
+  user-select: none;
+}
+
+.bene-card.visible {
+  animation: card-in .65s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+
+/* Green top bar */
+.bene-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
   height: 3px;
   background: var(--green);
   transform: scaleX(0);
@@ -389,328 +633,441 @@
   transition: transform .4s cubic-bezier(.4, 0, .2, 1);
 }
 
-.bene-card:hover::before { transform: scaleX(1); }
+.bene-card:hover { transform: translateY(-4px); border-color: rgba(3, 0, 129, .2); }
+.bene-card:hover::before { transform: scaleX(.4); }
 
-/* Decorative number */
-.bene-card-num {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 5rem;
-  color: rgba(3, 0, 129, .05);
-  line-height: 1;
-  letter-spacing: -.04em;
-  position: absolute;
-  top: 16px;
-  right: 24px;
-  transition: color .3s;
-  pointer-events: none;
-  user-select: none;
-}
-
-.bene-card:hover .bene-card-num { color: rgba(3, 0, 129, .09); }
-
-/* Icon */
+/* ── ICON ── */
 .bene-icon {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   background: rgba(3, 0, 129, .06);
-  border-radius: 16px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  flex-shrink: 0;
   transition: background .3s, transform .4s cubic-bezier(.34, 1.56, .64, 1);
 }
 
-.bene-card:hover .bene-icon {
+.bene-card:hover .bene-icon,
+.bene-card.active .bene-icon {
   background: var(--blue);
-  transform: rotate(-6deg) scale(1.1);
+  transform: rotate(-5deg) scale(1.08);
 }
 
 .bene-icon svg {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   color: var(--blue);
   transition: color .3s;
 }
 
-.bene-card:hover .bene-icon svg { color: var(--white); }
+.bene-card:hover .bene-icon svg,
+.bene-card.active .bene-icon svg { color: var(--white); }
 
-/* Title */
+/* ── CARD TITLE ── */
 .bene-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--blue);
+  letter-spacing: -.01em;
+  line-height: 1.25;
+}
+
+/* Click hint */
+.bene-card-hint {
+  font-family: var(--font-display);
+  font-size: .65rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(3, 0, 129, .3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  transition: color .3s;
+}
+
+.bene-card-hint svg {
+  width: 12px;
+  height: 12px;
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.bene-card:hover .bene-card-hint      { color: var(--blue); }
+.bene-card:hover .bene-card-hint svg  { transform: translateY(3px); }
+
+/* ── ACTIVE CARD (selected) ── */
+.bene-card.active {
+  flex: 0 0 200px; /* same width, panel is below */
+  border-color: rgba(3, 0, 129, .3);
+  background: var(--blue);
+  box-shadow: 0 16px 48px rgba(3, 0, 129, .2);
+  transform: translateY(-4px);
+}
+
+.bene-card.active::before  { transform: scaleX(1); }
+
+.bene-card.active .bene-title      { color: var(--white); }
+.bene-card.active .bene-card-hint  { color: rgba(255,255,255,.4); }
+
+.bene-card.active .bene-card-hint svg { transform: rotate(180deg); }
+.bene-card.active:hover .bene-card-hint svg { transform: rotate(180deg); }
+
+/* Payment card special colors when active */
+.bene-card.payment.active { background: var(--dark); }
+
+/* ── NAVIGATION ARROWS ── */
+.bene-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 0 24px;
+}
+
+.bene-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(3, 0, 129, .15);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  transition: background .3s, border-color .3s, transform .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.bene-nav-btn:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  transform: scale(1.1);
+}
+
+.bene-nav-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--blue);
+  transition: stroke .3s;
+}
+
+.bene-nav-btn:hover svg { stroke: var(--white); }
+
+.bene-nav-btn:disabled {
+  opacity: .3;
+  pointer-events: none;
+}
+
+/* Scroll progress dots */
+.bene-nav-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.bene-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(3, 0, 129, .15);
+  transition: background .3s, transform .3s;
+  cursor: pointer;
+}
+
+.bene-nav-dot.active {
+  background: var(--blue);
+  transform: scale(1.4);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   EXPANSION PANEL (below carousel)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.bene-panel {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height .55s cubic-bezier(.4, 0, .2, 1),
+              opacity .4s cubic-bezier(.4, 0, .2, 1);
+  margin: 0 24px;
+}
+
+.bene-panel.open {
+  max-height: 600px;
+  opacity: 1;
+}
+
+.bene-panel-inner {
+  border: 1.5px solid rgba(3, 0, 129, .1);
+  border-radius: 24px;
+  padding: 40px;
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Accent line top */
+.bene-panel-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+}
+
+/* ── Panel text side ── */
+.bene-panel-text {}
+
+.bene-panel-kicker {
+  font-family: var(--font-display);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--green);
+  display: block;
   margin-bottom: 12px;
+}
+
+.bene-panel-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  color: var(--blue);
   letter-spacing: -.02em;
+  margin-bottom: 16px;
+  line-height: 1.15;
 }
 
-/* Body */
-.bene-body {
-  font-size: .92rem;
+.bene-panel-body {
+  font-size: .95rem;
   font-weight: 300;
-  line-height: 1.75;
-  color: rgba(3, 0, 129, .6);
+  line-height: 1.8;
+  color: rgba(3, 0, 129, .65);
+  margin-bottom: 24px;
 }
 
-/* Highlight tag */
-.bene-tag {
+.bene-panel-body strong { color: var(--blue); font-weight: 600; }
+
+.bene-panel-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 20px;
   background: rgba(3, 0, 129, .05);
   border: 1px solid rgba(3, 0, 129, .1);
   border-radius: 100px;
-  padding: 5px 14px;
+  padding: 6px 16px;
   font-family: var(--font-display);
   font-size: .68rem;
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
   color: rgba(3, 0, 129, .5);
-  transition: background .3s, border-color .3s, color .3s;
 }
 
-.bene-card:hover .bene-tag {
-  background: rgba(3, 0, 129, .08);
-  border-color: rgba(3, 0, 129, .2);
-  color: var(--blue);
-}
-
-/* CTA link inside card */
-.bene-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 24px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: .8rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--blue);
-  text-decoration: none;
-  transition: gap .3s cubic-bezier(.34, 1.56, .64, 1);
-  cursor: none;
-}
-
-.bene-link:hover { gap: 14px; }
-
-.bene-link svg {
-  width: 16px;
-  height: 16px;
-  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
-}
-
-.bene-link:hover svg { transform: translateX(4px); }
-
-/* ── WIDE CARD (full grid width) ── */
-.bene-card.wide {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
-
-.bene-card.wide .bene-card-content { }
-.bene-card.wide .bene-card-visual  { }
-
-/* ── PAYMENT PROTECTION CARD (inverted) ── */
-.bene-card.payment {
+/* Payment panel override */
+.bene-panel.payment-panel .bene-panel-inner {
   background: var(--blue);
-  border-color: transparent;
-  grid-column: 1 / -1;
+  border-color: rgba(209, 215, 13, .2);
 }
 
-.bene-card.payment::before {
-  background: var(--green);
-}
+.bene-panel.payment-panel .bene-panel-title { color: var(--white); }
+.bene-panel.payment-panel .bene-panel-body  { color: rgba(255, 255, 255, .65); }
+.bene-panel.payment-panel .bene-panel-body strong { color: var(--white); }
 
-.bene-card.payment:hover {
-  background: var(--blue);
+.bene-panel.payment-panel .bene-panel-tag {
+  background: rgba(209, 215, 13, .12);
   border-color: rgba(209, 215, 13, .3);
-  box-shadow: 0 24px 64px rgba(3, 0, 129, .3);
+  color: rgba(255, 255, 255, .6);
 }
 
-.bene-card.payment .bene-card-num { color: rgba(255, 255, 255, .04); }
-.bene-card.payment:hover .bene-card-num { color: rgba(255, 255, 255, .07); }
-
-.bene-card.payment .bene-icon {
-  background: rgba(255, 255, 255, .1);
-  border: 1px solid rgba(255, 255, 255, .12);
-}
-
-.bene-card.payment:hover .bene-icon { background: rgba(209, 215, 13, .2); }
-.bene-card.payment .bene-icon svg   { color: var(--green); }
-.bene-card.payment:hover .bene-icon svg { color: var(--green); }
-
-.bene-card.payment .bene-title { color: var(--white); }
-.bene-card.payment .bene-body  { color: rgba(255, 255, 255, .65); }
-
-.payment-amount {
+/* Payment amount inside panel */
+.panel-payment-amount {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
   color: var(--green);
   letter-spacing: -.04em;
   line-height: 1;
   display: block;
-  margin: 16px 0 8px;
+  margin: 12px 0 6px;
 }
 
-.payment-label {
+.panel-payment-label {
   font-family: var(--font-display);
-  font-size: .72rem;
+  font-size: .68rem;
   font-weight: 600;
-  letter-spacing: .16em;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, .4);
+  color: rgba(255, 255, 255, .35);
+  margin-bottom: 16px;
+  display: block;
 }
 
-.bene-card.payment .bene-link {
-  color: var(--green);
-  margin-top: 28px;
-}
-
-.bene-card.payment .bene-tag {
-  background: rgba(209, 215, 13, .12);
-  border-color: rgba(209, 215, 13, .25);
-  color: rgba(255, 255, 255, .5);
-}
-
-.bene-card.payment:hover .bene-tag {
-  background: rgba(209, 215, 13, .2);
-  border-color: rgba(209, 215, 13, .4);
-  color: var(--green);
-}
-
-/* Layout inside payment card */
-.payment-card-inner {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 40px;
+.bene-panel-link {
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: gap .3s cubic-bezier(.34, 1.56, .64, 1);
+  cursor: none;
+  color: var(--blue);
 }
 
-.payment-visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.bene-panel.payment-panel .bene-panel-link { color: var(--green); }
+
+.bene-panel-link:hover { gap: 14px; }
+
+.bene-panel-link svg {
+  width: 15px;
+  height: 15px;
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
 }
 
-/* Animated shield SVG */
-.shield-wrap {
+.bene-panel-link:hover svg { transform: translateX(4px); }
+
+/* ── Panel image side ── */
+.bene-panel-image {
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: rgba(3, 0, 129, .04);
   position: relative;
-  width: 120px;
-  height: 120px;
+}
+
+/* Real image — shown when URL is provided */
+.bene-panel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Placeholder */
+.bene-panel-img-placeholder {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--dark) 100%);
+}
+
+.bene-panel-img-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.bene-panel-img-placeholder::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+
+.panel-placeholder-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(209, 215, 13, .3);
+  background: rgba(209, 215, 13, .08);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.shield-glow {
-  position: absolute;
-  inset: -20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(209, 215, 13, .15) 0%, transparent 70%);
-  animation: ben-shield-glow 4s ease-in-out infinite;
-}
-
-@keyframes ben-shield-glow {
-  0%, 100% { opacity: .6; transform: scale(1); }
-  50%       { opacity: 1;  transform: scale(1.1); }
-}
-
-.shield-svg {
-  width: 80px;
-  height: 80px;
   position: relative;
   z-index: 1;
 }
 
-.shield-path {
-  stroke-dasharray: 200;
-  stroke-dashoffset: 200;
-  animation: ben-draw-shield 2s 1s cubic-bezier(.4, 0, .2, 1) forwards;
+.panel-placeholder-icon svg {
+  width: 22px;
+  height: 22px;
+  color: var(--green);
 }
 
-@keyframes ben-draw-shield {
-  to { stroke-dashoffset: 0; }
-}
-
-/* ── FIDELITY CARD ── */
-.bene-card.fidelity {
+.panel-placeholder-label {
+  font-family: var(--font-display);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
   position: relative;
+  z-index: 1;
 }
 
+/* ── Fidelity earn badge (on compact card) ── */
 .fidelity-earn-badge {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 14px;
+  right: 14px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: rgba(209, 215, 13, .12);
   border: 1px solid rgba(209, 215, 13, .3);
   border-radius: 100px;
-  padding: 6px 14px;
+  padding: 4px 10px;
   font-family: var(--font-display);
-  font-size: .68rem;
+  font-size: .6rem;
   font-weight: 800;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   text-transform: uppercase;
-  color: rgba(3, 0, 129, .7);
+  color: rgba(3, 0, 129, .65);
+}
+
+.bene-card.active .fidelity-earn-badge {
+  color: var(--green);
+  background: rgba(209,215,13,.15);
+  border-color: rgba(209,215,13,.4);
 }
 
 .fidelity-earn-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--green);
   animation: ben-blink 1.6s ease-in-out infinite;
 }
 
-/* ── PROFILE-AWARE STATES ── */
-/* When a profile is selected, non-featured cards dim */
-.bene-card.dimmed {
-  opacity: .45;
-  transform: scale(.98);
-  pointer-events: none;
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .bene-panel-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .bene-panel-image { aspect-ratio: 16 / 9; }
 }
 
-.bene-card.featured {
-  border-color: rgba(3, 0, 129, .3);
-  box-shadow: 0 0 0 3px rgba(209, 215, 13, .25);
-}
-
-.bene-card.featured::after {
-  content: '★ Highlighted for you';
-  position: absolute;
-  bottom: 16px;
-  right: 20px;
-  font-family: var(--font-display);
-  font-size: .62rem;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--green);
-  opacity: .8;
-}
-
-.bene-card.payment.featured {
-  box-shadow: 0 24px 64px rgba(3, 0, 129, .3), 0 0 0 3px rgba(209, 215, 13, .4);
-}
-
-/* Smooth transition for profile toggle */
-.bene-card {
-  transition: transform .4s cubic-bezier(.34, 1.56, .64, 1),
-              border-color .4s,
-              box-shadow .4s,
-              background .3s,
-              opacity .4s;
+@media (max-width: 640px) {
+  .bene-carousel-track { padding: 12px 24px 20px; gap: 12px; }
+  .bene-card           { flex: 0 0 160px; min-height: 190px; padding: 22px 18px; }
+  .bene-panel          { margin: 0 12px; }
+  .bene-panel-inner    { padding: 28px 24px; }
+  .bene-carousel-outer::before,
+  .bene-carousel-outer::after { width: 32px; }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1012,18 +1369,9 @@
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    RESPONSIVE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-@media (max-width: 900px) {
-  .bene-grid { grid-template-columns: 1fr; }
-  .bene-card.wide { grid-template-columns: 1fr; gap: 24px; }
-  .payment-card-inner { grid-template-columns: 1fr; gap: 24px; }
-  .payment-visual { display: none; }
-}
-
 @media (max-width: 640px) {
   .ben-value-pills { gap: 8px; }
   .ben-pill        { padding: 10px 16px; font-size: .75rem; }
-
-  .profile-btn     { padding: 10px 18px; font-size: .75rem; }
 
   .fidelity-steps  { flex-wrap: wrap; gap: 20px; justify-content: center; }
   .fstep-connector { display: none; }
