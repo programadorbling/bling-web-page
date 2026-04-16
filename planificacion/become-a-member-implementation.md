@@ -108,55 +108,218 @@ The page must follow the exact same design system as the rest of the site:
 
 ## 4. Database Schema
 
+### Design rationale
+
+The form data is split across **6 normalized tables** instead of one flat table. This reflects the real entities: a membership request has one company, one ownership record, two key contacts, two references, and a set of services. Normalizing avoids NULL-heavy wide rows, makes querying each entity clean, and allows future expansion (e.g. adding a third contact) without ALTER TABLE on the main table.
+
+All foreign keys reference `membership_requests.id`. The parent row is inserted first; child rows are inserted in a single transaction immediately after.
+
+---
+
+### Entity relationship
+
+```
+membership_requests (parent)
+  ├── membership_company       (1:1)  — company data
+  ├── membership_services      (1:1)  — services + IATA + principal market
+  ├── membership_contacts      (1:2)  — key contact 1 and key contact 2
+  ├── membership_ownership     (1:1)  — ownership record
+  └── membership_references    (1:2)  — reference contact 1 and reference contact 2
+```
+
+---
+
 ### Table: `membership_requests`
+
+The parent/header record. Holds only metadata and status — no business data.
 
 ```sql
 CREATE TABLE membership_requests (
-  id                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-
-  -- Company Information
-  company_name        VARCHAR(255)    NOT NULL,
-  company_country     VARCHAR(100)    NOT NULL,
-  company_city        VARCHAR(100)    NOT NULL,
-  company_address     VARCHAR(500)    DEFAULT NULL,
-  company_website     VARCHAR(255)    DEFAULT NULL,
-  years_in_business   TINYINT UNSIGNED DEFAULT NULL,
-
-  -- Primary Contact
-  contact_first_name  VARCHAR(100)    NOT NULL,
-  contact_last_name   VARCHAR(100)    NOT NULL,
-  contact_email       VARCHAR(255)    NOT NULL,
-  contact_phone       VARCHAR(50)     NOT NULL,
-  contact_position    VARCHAR(100)    DEFAULT NULL,
-
-  -- Services offered (stored as JSON array)
-  services_offered    JSON            DEFAULT NULL,
-
-  -- Reference (optional — another member who referred them)
-  referred_by         VARCHAR(255)    DEFAULT NULL,
-
-  -- Message / Additional notes
-  message             TEXT            DEFAULT NULL,
+  id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
   -- Privacy & Legal
-  privacy_accepted    TINYINT(1)      NOT NULL DEFAULT 0,
+  privacy_accepted TINYINT(1)   NOT NULL DEFAULT 0,
 
-  -- Metadata
-  status              ENUM('pending','reviewing','approved','rejected')
-                                      NOT NULL DEFAULT 'pending',
-  ip_address          VARCHAR(45)     NOT NULL,        -- supports IPv6
-  user_agent          VARCHAR(500)    DEFAULT NULL,
-  recaptcha_score     DECIMAL(3,2)    DEFAULT NULL,
-  submitted_at        DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at          DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                      ON UPDATE CURRENT_TIMESTAMP,
+  -- Submission metadata
+  status          ENUM('pending','reviewing','approved','rejected')
+                                NOT NULL DEFAULT 'pending',
+  ip_address      VARCHAR(45)   NOT NULL,   -- IPv4 and IPv6
+  user_agent      VARCHAR(500)  DEFAULT NULL,
+  recaptcha_score DECIMAL(3,2)  DEFAULT NULL,
+  submitted_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                ON UPDATE CURRENT_TIMESTAMP,
 
-  -- Indexes
-  INDEX idx_status         (status),
-  INDEX idx_submitted_at   (submitted_at),
-  INDEX idx_contact_email  (contact_email)
+  INDEX idx_status       (status),
+  INDEX idx_submitted_at (submitted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
+
+---
+
+### Table: `membership_company`
+
+One row per membership request. Stores all company information.
+
+```sql
+CREATE TABLE membership_company (
+  id                   INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  request_id           INT UNSIGNED NOT NULL,
+
+  -- Required fields
+  company_name         VARCHAR(255)  NOT NULL,
+  country              VARCHAR(100)  NOT NULL,
+  city                 VARCHAR(100)  NOT NULL,
+
+  -- Optional fields
+  address              VARCHAR(500)  DEFAULT NULL,
+  company_phone        VARCHAR(50)   DEFAULT NULL,
+  zip_code             VARCHAR(20)   DEFAULT NULL,
+  website              VARCHAR(255)  DEFAULT NULL,
+  number_of_employees  VARCHAR(20)  DEFAULT NULL, 
+  established_date     DATE          DEFAULT NULL,       -- company founding date
+  other_networks       TEXT          DEFAULT NULL,       -- names of other networks/associations
+
+  CONSTRAINT fk_company_request
+    FOREIGN KEY (request_id) REFERENCES membership_requests(id)
+    ON DELETE CASCADE,
+  UNIQUE KEY uq_company_request (request_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+> **Note on `number_of_employees`:** In the frontend this is shown as a dropdown like "1 - 10", "11 - 20".
+
+> **Note on `established_date`:** The frontend shows a date picker (month + year minimum).
+> Store as `DATE`. If the user only provides year, store as `YYYY-01-01`.
+
+---
+
+### Table: `membership_services`
+
+One row per membership request. Stores services offered, IATA membership, and principal market.
+
+```sql
+CREATE TABLE membership_services (
+  id                INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  request_id        INT UNSIGNED NOT NULL,
+
+  -- Checkboxes — each stored as boolean
+  -- Hardcoded list (matches frontend checkboxes exactly):
+  svc_air_freight       TINYINT(1) NOT NULL DEFAULT 0,
+  svc_ocean_freight     TINYINT(1) NOT NULL DEFAULT 0,
+  svc_road_freight      TINYINT(1) NOT NULL DEFAULT 0,
+  svc_rail_freight      TINYINT(1) NOT NULL DEFAULT 0,
+  svc_customs_clearance TINYINT(1) NOT NULL DEFAULT 0,
+  svc_warehousing       TINYINT(1) NOT NULL DEFAULT 0,
+  svc_project_cargo     TINYINT(1) NOT NULL DEFAULT 0,
+  svc_multimodal        TINYINT(1) NOT NULL DEFAULT 0,
+  svc_courier_express   TINYINT(1) NOT NULL DEFAULT 0,
+  svc_dangerous_goods   TINYINT(1) NOT NULL DEFAULT 0,
+
+  -- IATA membership
+  iata_member       TINYINT(1)   NOT NULL DEFAULT 0,
+
+  -- Principal market (country name or ISO code)
+  principal_market  VARCHAR(100) DEFAULT NULL,
+
+  CONSTRAINT fk_services_request
+    FOREIGN KEY (request_id) REFERENCES membership_requests(id)
+    ON DELETE CASCADE,
+  UNIQUE KEY uq_services_request (request_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+> **Services list (hardcoded — matches frontend checkboxes):**
+> Air Freight, Ocean Freight, Road Freight, Rail Freight, Customs Clearance,
+> Warehousing, Project Cargo, Multimodal, Courier & Express, Dangerous Goods.
+>
+> Each service maps to one boolean column. This avoids a JSON blob and allows
+> future SQL filtering (e.g. `WHERE svc_air_freight = 1`).
+
+---
+
+### Table: `membership_contacts`
+
+Two rows per membership request — one for Key Contact 1, one for Key Contact 2.
+Differentiated by the `contact_order` column (1 or 2).
+
+```sql
+CREATE TABLE membership_contacts (
+  id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  request_id      INT UNSIGNED NOT NULL,
+  contact_order   TINYINT UNSIGNED NOT NULL,  -- 1 = Key Contact 1, 2 = Key Contact 2
+
+  -- Required for contact 1, optional for contact 2
+  prefix          ENUM('Mr','Ms','Mrs') DEFAULT NULL,
+  full_name       VARCHAR(200)  NOT NULL,
+  role            VARCHAR(100)  DEFAULT NULL,
+  email           VARCHAR(255)  NOT NULL,
+  phone           VARCHAR(50)   NOT NULL,
+
+  CONSTRAINT fk_contacts_request
+    FOREIGN KEY (request_id) REFERENCES membership_requests(id)
+    ON DELETE CASCADE,
+  UNIQUE KEY uq_contact_order (request_id, contact_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+> **Validation rule:** Key Contact 1 (`contact_order = 1`) is **required**.
+> Key Contact 2 (`contact_order = 2`) is **optional** — only insert the row if the user
+> provides at least `full_name`, `email`, and `phone` for the second contact.
+
+---
+
+### Table: `membership_ownership`
+
+One row per membership request. Stores the ownership/principal information.
+
+```sql
+CREATE TABLE membership_ownership (
+  id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  request_id      INT UNSIGNED NOT NULL,
+
+  full_name       VARCHAR(200) NOT NULL,
+  role            VARCHAR(100) DEFAULT NULL,  -- current role in the company
+  mobile_phone    VARCHAR(50)  NOT NULL,
+
+  CONSTRAINT fk_ownership_request
+    FOREIGN KEY (request_id) REFERENCES membership_requests(id)
+    ON DELETE CASCADE,
+  UNIQUE KEY uq_ownership_request (request_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+---
+
+### Table: `membership_references`
+
+Two rows per membership request — one for Reference Contact 1, one for Reference Contact 2.
+Differentiated by `reference_order` (1 or 2). Both references are optional.
+
+```sql
+CREATE TABLE membership_references (
+  id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  request_id       INT UNSIGNED NOT NULL,
+  reference_order  TINYINT UNSIGNED NOT NULL,  -- 1 or 2
+
+  company_name     VARCHAR(255) NOT NULL,
+  contact_name     VARCHAR(200) NOT NULL,
+  contact_role     VARCHAR(100) DEFAULT NULL,
+  phone            VARCHAR(50)  NOT NULL,
+  email            VARCHAR(255) NOT NULL,
+
+  CONSTRAINT fk_references_request
+    FOREIGN KEY (request_id) REFERENCES membership_requests(id)
+    ON DELETE CASCADE,
+  UNIQUE KEY uq_reference_order (request_id, reference_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+> **Validation rule:** Both references are optional. If the user provides Reference 1,
+> all its fields (`company_name`, `contact_name`, `phone`, `email`) are required.
+> The same rule applies to Reference 2 independently.
+
+---
 
 ### Table: `rate_limit_log`
 
@@ -166,13 +329,34 @@ CREATE TABLE rate_limit_log (
   ip_address   VARCHAR(45)  NOT NULL,
   endpoint     VARCHAR(100) NOT NULL DEFAULT 'membership',
   attempted_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_ip_endpoint (ip_address, endpoint),
+  INDEX idx_ip_endpoint  (ip_address, endpoint),
   INDEX idx_attempted_at (attempted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
 > **Rate limit rule:** Max **3 submissions per IP per 10 minutes** per endpoint.
 > Records older than 24 hours can be purged periodically.
+
+---
+
+### Transaction strategy for inserts
+
+All inserts must happen inside a **single PDO transaction**. If any child insert fails, the entire request is rolled back — no orphan records.
+
+```
+BEGIN TRANSACTION
+  INSERT INTO membership_requests          → get $requestId
+  INSERT INTO membership_company           (request_id = $requestId)
+  INSERT INTO membership_services          (request_id = $requestId)
+  INSERT INTO membership_contacts          (contact_order = 1)
+  INSERT INTO membership_contacts          (contact_order = 2)  ← only if provided
+  INSERT INTO membership_ownership         (request_id = $requestId)
+  INSERT INTO membership_references        (reference_order = 1) ← only if provided
+  INSERT INTO membership_references        (reference_order = 2) ← only if provided
+COMMIT
+```
+
+On any `PDOException` → `ROLLBACK` → log error → return HTTP 500.
 
 ---
 
@@ -206,51 +390,151 @@ CREATE TABLE rate_limit_log (
 
 **Form fields** — all inside `<form id="membership-form">`:
 
+The form is divided into **named fieldset groups** matching the database entities.
+Each fieldset has a visible legend heading styled consistently with the site design.
+
+**Fieldset 1 — Company Information**
+
 | Field name | Type | Required | Label |
 |---|---|---|---|
 | `company_name` | text | ✅ | Company Name |
-| `company_country` | select | ✅ | Country |
-| `company_city` | text | ✅ | City |
-| `company_address` | text | ❌ | Company Address |
-| `company_website` | url | ❌ | Website |
-| `years_in_business` | number (min:0, max:150) | ❌ | Years in Business |
-| `contact_first_name` | text | ✅ | First Name |
-| `contact_last_name` | text | ✅ | Last Name |
-| `contact_email` | email | ✅ | Email Address |
-| `contact_phone` | tel | ✅ | Phone Number |
-| `contact_position` | text | ❌ | Position / Title |
-| `services_offered` | checkbox group | ❌ | Services Offered |
-| `referred_by` | text | ❌ | Referred by (member name) |
-| `message` | textarea | ❌ | Additional Message |
+| `country` | select | ✅ | Country |
+| `city` | text | ✅ | City |
+| `address` | text | ❌ | Address |
+| `company_phone` | tel | ❌ | Company Phone |
+| `zip_code` | text | ❌ | ZIP / Postal Code |
+| `website` | url | ❌ | Website |
+| `number_of_employees` | number (min:1) | ❌ | Number of Employees |
+| `established_date` | month input (`<input type="month">`) | ❌ | Established Since |
+| `other_networks` | textarea | ❌ | Other Networks / Associations |
+
+**Fieldset 2 — Services & Market**
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
+| `services[]` | checkbox group | ❌ | Services Offered |
+| `iata_member` | checkbox (boolean) | ❌ | IATA Member |
+| `principal_market` | select (country) | ❌ | Principal Market |
+
+**Fieldset 3 — Key Contact 1**
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
+| `kc1_prefix` | select (`Mr / Ms / Mrs`) | ❌ | Prefix |
+| `kc1_full_name` | text | ✅ | Full Name |
+| `kc1_role` | text | ❌ | Role / Position |
+| `kc1_email` | email | ✅ | Email |
+| `kc1_phone` | tel | ✅ | Phone |
+
+**Fieldset 4 — Key Contact 2** *(optional section — collapse/hide by default, expandable)*
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
+| `kc2_prefix` | select (`Mr / Ms / Mrs`) | ❌ | Prefix |
+| `kc2_full_name` | text | ❌* | Full Name |
+| `kc2_role` | text | ❌ | Role / Position |
+| `kc2_email` | email | ❌* | Email |
+| `kc2_phone` | tel | ❌* | Phone |
+
+> *If the user expands Key Contact 2 and enters **any** field, then `kc2_full_name`, `kc2_email`, and `kc2_phone` become required for that contact.
+
+**Fieldset 5 — Ownership**
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
+| `owner_full_name` | text | ✅ | Full Name |
+| `owner_role` | text | ❌ | Current Role |
+| `owner_mobile` | tel | ✅ | Mobile Phone |
+
+**Fieldset 6 — Reference Contact 1** *(optional section)*
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
+| `ref1_company_name` | text | ❌* | Company Name |
+| `ref1_contact_name` | text | ❌* | Contact Name |
+| `ref1_role` | text | ❌ | Role |
+| `ref1_phone` | tel | ❌* | Phone |
+| `ref1_email` | email | ❌* | Email |
+
+> *Same conditional logic as Key Contact 2: if any ref1 field has a value, all marked fields become required.
+
+**Fieldset 7 — Reference Contact 2** *(optional section)*
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
+| `ref2_company_name` | text | ❌* | Company Name |
+| `ref2_contact_name` | text | ❌* | Contact Name |
+| `ref2_role` | text | ❌ | Role |
+| `ref2_phone` | tel | ❌* | Phone |
+| `ref2_email` | email | ❌* | Email |
+
+**Privacy & Submit**
+
+| Field name | Type | Required | Label |
+|---|---|---|---|
 | `privacy_accepted` | checkbox | ✅ | I accept the Privacy Policy |
 | `website_url` | text (honeypot) | — | **Hidden field. Leave blank.** |
+
+---
 
 **Honeypot field rules:**
 - Visually hidden via CSS: `position: absolute; left: -9999px; opacity: 0; tab-index: -1`
 - **Never** use `display: none` or `type="hidden"` — bots detect those.
 - If this field has any value when the form is submitted → the JS must silently show a success message but NOT send the data.
 
-**Services offered checkboxes** (values sent as array):
-- `Air Freight`
-- `Ocean Freight`
-- `Road Freight`
-- `Rail Freight`
-- `Customs Clearance`
-- `Warehousing`
-- `Project Cargo`
+**Services offered checkboxes** (hardcoded list — must match `membership_services` column names):
+- `Air Freight` → `svc_air_freight`
+- `Ocean Freight` → `svc_ocean_freight`
+- `Road Freight` → `svc_road_freight`
+- `Rail Freight` → `svc_rail_freight`
+- `Customs Clearance` → `svc_customs_clearance`
+- `Warehousing` → `svc_warehousing`
+- `Project Cargo` → `svc_project_cargo`
+- `Multimodal` → `svc_multimodal`
+- `Courier & Express` → `svc_courier_express`
+- `Dangerous Goods` → `svc_dangerous_goods`
 
 **Form layout (two-column grid on desktop, single column on mobile):**
 ```
-[company_name         ] [company_country   ]
-[company_city         ] [company_website   ]
-[company_address      ] [years_in_business ]
-[contact_first_name   ] [contact_last_name ]
-[contact_email        ] [contact_phone     ]
-[contact_position     ] [referred_by       ]
-[services_offered checkboxes — full width  ]
-[message textarea — full width             ]
-[privacy_accepted checkbox — full width    ]
-[submit button — full width                ]
+── COMPANY INFORMATION ──────────────────────────────────
+[company_name          ] [country              ]
+[city                  ] [zip_code             ]
+[address — full width                          ]
+[company_phone         ] [website              ]
+[number_of_employees   ] [established_date     ]
+[other_networks — textarea — full width        ]
+
+── SERVICES & MARKET ────────────────────────────────────
+[services checkboxes — full width, 2 cols      ]
+[iata_member checkbox  ] [principal_market     ]
+
+── KEY CONTACT 1 ─────────────────────────────────────────
+[kc1_prefix  ] [kc1_full_name               ]
+[kc1_role              ] [kc1_email           ]
+[kc1_phone — full width                        ]
+
+── KEY CONTACT 2 (collapsed by default, "+ Add" button) ──
+[kc2_prefix  ] [kc2_full_name               ]
+[kc2_role              ] [kc2_email           ]
+[kc2_phone — full width                        ]
+
+── OWNERSHIP ─────────────────────────────────────────────
+[owner_full_name        ] [owner_role          ]
+[owner_mobile — full width                     ]
+
+── REFERENCE 1 (collapsed, "+ Add Reference" button) ────
+[ref1_company_name      ] [ref1_contact_name   ]
+[ref1_role              ] [ref1_email          ]
+[ref1_phone — full width                       ]
+
+── REFERENCE 2 (collapsed, shown after ref1 is filled) ──
+[ref2_company_name      ] [ref2_contact_name   ]
+[ref2_role              ] [ref2_email          ]
+[ref2_phone — full width                       ]
+
+── PRIVACY & SUBMIT ──────────────────────────────────────
+[privacy_accepted checkbox — full width        ]
+[submit button — full width                    ]
 ```
 
 **Submit button states:**
@@ -498,36 +782,81 @@ define('APP_URL',  'https://bling-network.com');
 
 7. INPUT VALIDATION (backend — independent of frontend)
    Validate each field. Collect all errors before returning.
-   Rules:
-   ├── company_name:       required, max 255 chars
-   ├── company_country:    required, max 100 chars
-   ├── company_city:       required, max 100 chars
-   ├── company_address:    optional, max 500 chars
-   ├── company_website:    optional, must be valid URL if provided
-   ├── years_in_business:  optional, integer 0-150
-   ├── contact_first_name: required, max 100 chars
-   ├── contact_last_name:  required, max 100 chars
-   ├── contact_email:      required, must pass filter_var FILTER_VALIDATE_EMAIL
-   ├── contact_phone:      required, min 7 chars, only digits/spaces/+/-()/
-   ├── contact_position:   optional, max 100 chars
-   ├── services_offered:   optional, must be array if provided, each item max 50 chars
-   ├── referred_by:        optional, max 255 chars
-   ├── message:            optional, max 2000 chars
-   └── privacy_accepted:   must be true (boolean) or '1' or 1
+
+   COMPANY INFORMATION:
+   ├── company_name:         required, max 255 chars
+   ├── country:              required, max 100 chars
+   ├── city:                 required, max 100 chars
+   ├── address:              optional, max 500 chars
+   ├── company_phone:        optional, min 7 chars, only digits/spaces/+/-/()/
+   ├── zip_code:             optional, max 20 chars, alphanumeric
+   ├── website:              optional, must be valid URL if provided
+   ├── number_of_employees:  optional, integer >= 1
+   ├── established_date:     optional, valid date format YYYY-MM (from month input)
+   └── other_networks:       optional, max 1000 chars
+
+   SERVICES & MARKET:
+   ├── services[]:           optional, each item must match a known service key
+   ├── iata_member:          optional, boolean (true/false/0/1)
+   └── principal_market:     optional, max 100 chars
+
+   KEY CONTACT 1 (required):
+   ├── kc1_prefix:           optional, must be one of: Mr, Ms, Mrs
+   ├── kc1_full_name:        required, max 200 chars
+   ├── kc1_role:             optional, max 100 chars
+   ├── kc1_email:            required, must pass filter_var FILTER_VALIDATE_EMAIL
+   └── kc1_phone:            required, min 7 chars, only digits/spaces/+/-/()/
+
+   KEY CONTACT 2 (conditional — required only if any kc2_* field has a value):
+   ├── kc2_prefix:           optional, must be one of: Mr, Ms, Mrs
+   ├── kc2_full_name:        conditional-required, max 200 chars
+   ├── kc2_role:             optional, max 100 chars
+   ├── kc2_email:            conditional-required, FILTER_VALIDATE_EMAIL
+   └── kc2_phone:            conditional-required, min 7 chars
+
+   OWNERSHIP (required):
+   ├── owner_full_name:      required, max 200 chars
+   ├── owner_role:           optional, max 100 chars
+   └── owner_mobile:         required, min 7 chars, only digits/spaces/+/-/()/
+
+   REFERENCE 1 (conditional — required fields apply if any ref1_* field has a value):
+   ├── ref1_company_name:    conditional-required, max 255 chars
+   ├── ref1_contact_name:    conditional-required, max 200 chars
+   ├── ref1_role:            optional, max 100 chars
+   ├── ref1_phone:           conditional-required, min 7 chars
+   └── ref1_email:           conditional-required, FILTER_VALIDATE_EMAIL
+
+   REFERENCE 2 (same conditional logic as reference 1, independent):
+   ├── ref2_company_name:    conditional-required, max 255 chars
+   ├── ref2_contact_name:    conditional-required, max 200 chars
+   ├── ref2_role:            optional, max 100 chars
+   ├── ref2_phone:           conditional-required, min 7 chars
+   └── ref2_email:           conditional-required, FILTER_VALIDATE_EMAIL
+
+   PRIVACY:
+   └── privacy_accepted:     must be true (boolean) or '1' or 1
+
    If any errors → return 422 with errors object
 
 8. SANITIZE
    └── Run htmlspecialchars() on all string inputs before storing
 
-9. DATABASE INSERT
+9. DATABASE INSERT (single transaction — see Section 4 transaction strategy)
    ├── Open PDO connection (DSN from config)
    ├── PDO::ATTR_ERRMODE → PDO::ERRMODE_EXCEPTION
    ├── PDO::ATTR_EMULATE_PREPARES → false
-   ├── Prepare INSERT statement for membership_requests
-   ├── Bind all parameters (never concatenate)
-   ├── Execute
-   ├── Get lastInsertId() for reference
-   └── On PDOException → log error, return 500
+   ├── BEGIN TRANSACTION
+   ├── INSERT INTO membership_requests → get $requestId
+   ├── INSERT INTO membership_company  (request_id = $requestId)
+   ├── INSERT INTO membership_services (request_id = $requestId, map services[] to boolean columns)
+   ├── INSERT INTO membership_contacts (contact_order=1, all kc1_* fields)
+   ├── INSERT INTO membership_contacts (contact_order=2) — only if kc2_full_name is present
+   ├── INSERT INTO membership_ownership (request_id = $requestId)
+   ├── INSERT INTO membership_references (reference_order=1) — only if ref1 fields present
+   ├── INSERT INTO membership_references (reference_order=2) — only if ref2 fields present
+   ├── COMMIT
+   ├── Store $requestId for use in email templates
+   └── On PDOException → ROLLBACK → log error → return 500
 
 10. SEND INTERNAL NOTIFICATION EMAIL
     ├── Build HTML email with all submitted data (see Email Templates section)
@@ -766,7 +1095,7 @@ Both emails must be HTML emails using inline CSS (email clients strip `<style>` 
 
 ### 8.1 Internal Notification Email
 
-**Subject:** `[New Membership Application] {company_name} — {company_country}`
+**Subject:** `[New Membership Application] {company_name} — {country}`
 
 **Content structure:**
 ```
@@ -776,33 +1105,58 @@ HEADER
 
 BODY
   H1: New Membership Application
-  Subtitle: Submitted on {submitted_at} from {ip_address}
+  Subtitle: Submitted on {submitted_at} · IP: {ip_address} · reCAPTCHA score: {recaptcha_score}
 
   SECTION: Company Information
-  ┌─ Company Name:     {company_name}
-  ├─ Country:          {company_country}
-  ├─ City:             {company_city}
-  ├─ Address:          {company_address}
-  ├─ Website:          {company_website}
-  └─ Years in Business:{years_in_business}
+  ┌─ Company Name:       {company_name}
+  ├─ Country:            {country}
+  ├─ City:               {city}
+  ├─ Address:            {address}
+  ├─ Company Phone:      {company_phone}
+  ├─ ZIP Code:           {zip_code}
+  ├─ Website:            {website}
+  ├─ Employees:          {number_of_employees}
+  ├─ Established:        {established_date}
+  └─ Other Networks:     {other_networks}
 
-  SECTION: Primary Contact
-  ┌─ Name:             {contact_first_name} {contact_last_name}
-  ├─ Position:         {contact_position}
-  ├─ Email:            {contact_email}
-  └─ Phone:            {contact_phone}
+  SECTION: Services & Market
+  ┌─ Services Offered:   {comma-separated list of checked services}
+  ├─ IATA Member:        Yes / No
+  └─ Principal Market:   {principal_market}
 
-  SECTION: Services Offered
-  └─ {services_offered as comma-separated list}
+  SECTION: Key Contact 1
+  ┌─ Name:               {kc1_prefix} {kc1_full_name}
+  ├─ Role:               {kc1_role}
+  ├─ Email:              {kc1_email}
+  └─ Phone:              {kc1_phone}
 
-  SECTION: Additional Information
-  ├─ Referred by:      {referred_by}
-  └─ Message:          {message}
+  SECTION: Key Contact 2 (only if provided)
+  ┌─ Name:               {kc2_prefix} {kc2_full_name}
+  ├─ Role:               {kc2_role}
+  ├─ Email:              {kc2_email}
+  └─ Phone:              {kc2_phone}
 
-  CTA BUTTON: "Review Application" → link to phpMyAdmin or internal admin (optional)
+  SECTION: Ownership
+  ┌─ Name:               {owner_full_name}
+  ├─ Role:               {owner_role}
+  └─ Mobile:             {owner_mobile}
+
+  SECTION: Reference 1 (only if provided)
+  ┌─ Company:            {ref1_company_name}
+  ├─ Contact:            {ref1_contact_name}
+  ├─ Role:               {ref1_role}
+  ├─ Phone:              {ref1_phone}
+  └─ Email:              {ref1_email}
+
+  SECTION: Reference 2 (only if provided)
+  ┌─ Company:            {ref2_company_name}
+  ├─ Contact:            {ref2_contact_name}
+  ├─ Role:               {ref2_role}
+  ├─ Phone:              {ref2_phone}
+  └─ Email:              {ref2_email}
 
 FOOTER
-  └─ "Reply directly to this email to contact the applicant."
+  └─ "Reply directly to this email to contact the applicant (Reply-To: {kc1_email})."
 ```
 
 **Styling guidelines (inline CSS):**
@@ -811,6 +1165,7 @@ FOOTER
 - Section headings: `#030081`, font-weight bold, border-bottom `2px solid #d1d70d`
 - Data labels: bold, `#333333`
 - Data values: `#555555`
+- Optional sections (KContact 2, References) only rendered if data exists
 - Max-width: 600px, centered
 
 ---
@@ -819,6 +1174,8 @@ FOOTER
 
 **Subject:** `We received your application — Bling Network`
 
+**Send to:** `kc1_email` (Key Contact 1 email)
+
 **Content structure:**
 ```
 HEADER
@@ -826,16 +1183,16 @@ HEADER
   └─ Background: #030081
 
 BODY
-  H1: Thank you, {contact_first_name}!
+  H1: Thank you, {kc1_full_name}!
   Paragraph:
     "We have received your membership application for {company_name}.
-     Our team will review your request and contact you at {contact_email}
+     Our team will review your request and contact you at {kc1_email}
      within 2–3 business days."
 
   SUMMARY BOX (light gray background):
-  ┌─ Application Reference: #{id}
+  ┌─ Application Reference: #{request_id}
   ├─ Company: {company_name}
-  ├─ Contact: {contact_first_name} {contact_last_name}
+  ├─ Primary Contact: {kc1_full_name}
   └─ Submitted: {submitted_at}
 
   Paragraph:
@@ -879,5 +1236,6 @@ After this feature is live, evaluate whether they should point to `become-a-memb
 
 ---
 
-*Document version 1.0 — Bling Network · April 2026*
+*Document version 1.1 — Bling Network · April 2026*
+*Changelog v1.1: Database schema normalized into 6 tables. Form fields updated to match full entity model (company, services, 2 contacts, ownership, 2 references). Backend validation rules updated. Email templates updated to use kc1_* fields as primary contact.*
 *This document is intended for use by AI code generators and developers implementing the Become a Member feature.*

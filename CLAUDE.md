@@ -21,3 +21,10 @@
 - Feature: become-a-member.html
 - Full spec: become-a-member-implementation.md (READ THIS BEFORE CODING)
 - Follow the 6 milestones in order. Do not skip ahead.
+
+## Database schema (become-a-member)
+- 6 normalized tables: membership_requests (parent), membership_company,
+  membership_services, membership_contacts (contact_order 1/2),
+  membership_ownership, membership_references (reference_order 1/2)
+- All child tables cascade delete on parent
+- Inserts must use a single PDO transaction
