@@ -259,7 +259,7 @@ if (track) {
     // Nota: NO activamos is-dragging todavía
   });
 
-  document.addEventListener('mousemove', e => {
+  document.addEventListener('mousemove', e => { 
     if (!isPointerDown) return;
 
     moved = Math.abs(e.clientX - startX);
