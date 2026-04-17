@@ -1,6 +1,4 @@
 <?php
-define('BLING_APP', true);
-
 if (!defined('BLING_APP')) {
     http_response_code(403);
     exit('Forbidden');
@@ -9,23 +7,23 @@ if (!defined('BLING_APP')) {
 // ── Database ─────────────────────────────────────────────
 define('DB_HOST',    'localhost');
 define('DB_NAME',    'bling_db');
-define('DB_USER',    'bling_user');
-define('DB_PASS',    'YOUR_DB_PASS');
+define('DB_USER',    'root');
+define('DB_PASS',    '');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── SMTP (IONOS) ─────────────────────────────────────────
 define('SMTP_HOST',      'smtp.ionos.com');
 define('SMTP_PORT',      587);
-define('SMTP_USER',      'noreply@bling-network.com');
-define('SMTP_PASS',      'YOUR_SMTP_PASS');
-define('SMTP_FROM',      'noreply@bling-network.com');
-define('SMTP_FROM_NAME', 'Bling Network');
+define('SMTP_USER',      'programador@blinglogisticsnetwork.com');
+define('SMTP_PASS',      '09pr0gr@MAd0r#2025');
+define('SMTP_FROM',      'programador@blinglogisticsnetwork.com');
+define('SMTP_FROM_NAME', 'Bling Network Developer Enviroment');
 
 // ── Internal notification recipients ─────────────────────
 // Add all staff emails that should receive new membership notifications
 define('NOTIFY_EMAILS', [
-    'admin@bling-network.com',
-    'membership@bling-network.com',
+    'programador@blinglogisticsnetwork.com',
+    'prodigitalwebs@gmail.com',
 ]);
 
 // ── reCAPTCHA v3 ─────────────────────────────────────────
@@ -37,5 +35,5 @@ define('RATE_LIMIT_MAX',    3);   // max submissions
 define('RATE_LIMIT_WINDOW', 10);  // minutes
 
 // ── App ───────────────────────────────────────────────────
-define('APP_ENV', 'production');  // 'development' | 'production'
-define('APP_URL', 'https://bling-network.com');
+define('APP_ENV', 'development');  // 'development' | 'production'
+define('APP_URL', '');

@@ -28,3 +28,8 @@
   membership_ownership, membership_references (reference_order 1/2)
 - All child tables cascade delete on parent
 - Inserts must use a single PDO transaction
+
+## Security pattern — config.php
+Every PHP file that requires config.php MUST define('BLING_APP', true)
+as its absolute first statement before the require_once call.
+config.php itself must NEVER contain define('BLING_APP', true).

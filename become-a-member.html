@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="https://bling-network.com/uploads/FAVICON.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bling Network — Become a Member</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/become-a-member.css">
+  <script src="https://www.google.com/recaptcha/api.js?render=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MFLZFpku" async defer></script>
+</head>
+
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor-dot"></div>
+
+  <!-- ── NAV ───────────────────────────────────────────────── -->
+  <nav id="main-nav">
+    <div class="nav-logo">
+      <img src="https://bling-network.com/uploads/Logo-de-Bling-2026_Transparencia.png" alt="Bling Network">
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="about.html" class="nav-link">About</a>
+      <a href="benefits.html" class="nav-link">Benefits</a>
+      <a href="social-media.html" class="nav-link">Connect →</a>
+      <a href="become-a-member.html" class="nav-link active">Become a Member</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ── HERO ─────────────────────────────────────────────── -->
+    <section id="member-hero">
+      <div class="hero-geo">
+        <div class="dot-grid"></div>
+        <div class="glow-blob"></div>
+        <div class="circle-spin"></div>
+        <div class="circle-spin-2"></div>
+      </div>
+
+      <div class="hero-logo-wrap">
+        <img src="https://bling-network.com/uploads/Logo-de-Bling-2026_Transparencia.png" alt="Bling Network">
+      </div>
+
+      <h1 class="hero-headline">
+        Join the Network.<br>
+        <span class="underline-word">Grow Together.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Apply for membership and become part of a <strong>global community of trusted freight forwarders</strong> — verified partners, real relationships, and real business growth.
+      </p>
+    </section>
+
+    <!-- ── FORM SECTION ──────────────────────────────────────── -->
+    <section id="member-form-section">
+      <div class="form-container">
+
+        <!-- Success message (hidden by default) -->
+        <div id="success-message" class="success-card" hidden>
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="48" height="48">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 12.5l3 3 5-5.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <h2>Application Received</h2>
+          <p>Your membership application has been submitted successfully.<br>
+            Our team will review your request and contact you at <strong id="success-email"></strong> within 2–3 business days.</p>
+        </div>
+
+        <!-- The form -->
+        <form id="membership-form" novalidate>
+
+          <!-- ── FIELDSET 1: Company Information ── -->
+          <fieldset class="form-fieldset">
+            <legend class="fieldset-legend">Company Information</legend>
+            <div class="form-grid">
+
+              <div class="field-group">
+                <label for="company_name" class="field-label">Company Name <span class="req">*</span></label>
+                <input type="text" id="company_name" name="company_name" class="field-input" placeholder="Acme Freight Ltd." maxlength="255" required>
+                <span class="field-error" id="company_name-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="country" class="field-label">Country <span class="req">*</span></label>
+                <select id="country" name="country" class="field-input" required>
+                  <option value="">— Select Country —</option>
+                  <option>Afghanistan</option>
+                  <option>Albania</option>
+                  <option>Algeria</option>
+                  <option>Angola</option>
+                  <option>Argentina</option>
+                  <option>Armenia</option>
+                  <option>Australia</option>
+                  <option>Austria</option>
+                  <option>Azerbaijan</option>
+                  <option>Bahrain</option>
+                  <option>Bangladesh</option>
+                  <option>Belarus</option>
+                  <option>Belgium</option>
+                  <option>Benin</option>
+                  <option>Bolivia</option>
+                  <option>Bosnia and Herzegovina</option>
+                  <option>Brazil</option>
+                  <option>Bulgaria</option>
+                  <option>Cambodia</option>
+                  <option>Cameroon</option>
+                  <option>Canada</option>
+                  <option>Chile</option>
+                  <option>China</option>
+                  <option>Colombia</option>
+                  <option>Congo (DRC)</option>
+                  <option>Costa Rica</option>
+                  <option>Croatia</option>
+                  <option>Cuba</option>
+                  <option>Cyprus</option>
+                  <option>Czech Republic</option>
+                  <option>Denmark</option>
+                  <option>Dominican Republic</option>
+                  <option>Ecuador</option>
+                  <option>Egypt</option>
+                  <option>El Salvador</option>
+                  <option>Estonia</option>
+                  <option>Ethiopia</option>
+                  <option>Finland</option>
+                  <option>France</option>
+                  <option>Georgia</option>
+                  <option>Germany</option>
+                  <option>Ghana</option>
+                  <option>Greece</option>
+                  <option>Guatemala</option>
+                  <option>Honduras</option>
+                  <option>Hong Kong</option>
+                  <option>Hungary</option>
+                  <option>India</option>
+                  <option>Indonesia</option>
+                  <option>Iran</option>
+                  <option>Iraq</option>
+                  <option>Ireland</option>
+                  <option>Israel</option>
+                  <option>Italy</option>
+                  <option>Ivory Coast</option>
+                  <option>Jamaica</option>
+                  <option>Japan</option>
+                  <option>Jordan</option>
+                  <option>Kazakhstan</option>
+                  <option>Kenya</option>
+                  <option>Kuwait</option>
+                  <option>Latvia</option>
+                  <option>Lebanon</option>
+                  <option>Libya</option>
+                  <option>Lithuania</option>
+                  <option>Luxembourg</option>
+                  <option>Malaysia</option>
+                  <option>Malta</option>
+                  <option>Mexico</option>
+                  <option>Moldova</option>
+                  <option>Morocco</option>
+                  <option>Mozambique</option>
+                  <option>Myanmar</option>
+                  <option>Netherlands</option>
+                  <option>New Zealand</option>
+                  <option>Nicaragua</option>
+                  <option>Nigeria</option>
+                  <option>Norway</option>
+                  <option>Oman</option>
+                  <option>Pakistan</option>
+                  <option>Panama</option>
+                  <option>Paraguay</option>
+                  <option>Peru</option>
+                  <option>Philippines</option>
+                  <option>Poland</option>
+                  <option>Portugal</option>
+                  <option>Qatar</option>
+                  <option>Romania</option>
+                  <option>Russia</option>
+                  <option>Saudi Arabia</option>
+                  <option>Senegal</option>
+                  <option>Serbia</option>
+                  <option>Singapore</option>
+                  <option>Slovakia</option>
+                  <option>Slovenia</option>
+                  <option>South Africa</option>
+                  <option>South Korea</option>
+                  <option>Spain</option>
+                  <option>Sri Lanka</option>
+                  <option>Sweden</option>
+                  <option>Switzerland</option>
+                  <option>Taiwan</option>
+                  <option>Tanzania</option>
+                  <option>Thailand</option>
+                  <option>Trinidad and Tobago</option>
+                  <option>Tunisia</option>
+                  <option>Turkey</option>
+                  <option>Ukraine</option>
+                  <option>United Arab Emirates</option>
+                  <option>United Kingdom</option>
+                  <option>United States</option>
+                  <option>Uruguay</option>
+                  <option>Uzbekistan</option>
+                  <option>Venezuela</option>
+                  <option>Vietnam</option>
+                  <option>Yemen</option>
+                  <option>Zimbabwe</option>
+                </select>
+                <span class="field-error" id="country-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="city" class="field-label">City <span class="req">*</span></label>
+                <input type="text" id="city" name="city" class="field-input" placeholder="Miami" maxlength="100" required>
+                <span class="field-error" id="city-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="zip_code" class="field-label">ZIP / Postal Code</label>
+                <input type="text" id="zip_code" name="zip_code" class="field-input" placeholder="33101" maxlength="20">
+                <span class="field-error" id="zip_code-error"></span>
+              </div>
+
+              <div class="field-group field-full">
+                <label for="address" class="field-label">Address</label>
+                <input type="text" id="address" name="address" class="field-input" placeholder="123 Logistics Ave, Suite 400" maxlength="500">
+                <span class="field-error" id="address-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="company_phone" class="field-label">Company Phone</label>
+                <input type="tel" id="company_phone" name="company_phone" class="field-input" placeholder="+1 305 555 0100" maxlength="50">
+                <span class="field-error" id="company_phone-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="website" class="field-label">Website</label>
+                <input type="url" id="website" name="website" class="field-input" placeholder="https://yourcompany.com" maxlength="255">
+                <span class="field-error" id="website-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="number_of_employees" class="field-label">Number of Employees</label>
+                <select id="number_of_employees" name="number_of_employees" class="field-input">
+                  <option value="">— Select Range —</option>
+                  <option value="1 - 10">1 – 10</option>
+                  <option value="11 - 20">11 – 20</option>
+                  <option value="21 - 50">21 – 50</option>
+                  <option value="51 - 100">51 – 100</option>
+                  <option value="101 - 250">101 – 250</option>
+                  <option value="251 - 500">251 – 500</option>
+                  <option value="500+">500+</option>
+                </select>
+                <span class="field-error" id="number_of_employees-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="established_date" class="field-label">Established Since</label>
+                <input type="month" id="established_date" name="established_date" class="field-input">
+                <span class="field-error" id="established_date-error"></span>
+              </div>
+
+              <div class="field-group field-full">
+                <label for="other_networks" class="field-label">Other Networks / Associations</label>
+                <textarea id="other_networks" name="other_networks" class="field-input field-textarea" placeholder="e.g. WCA Family, Conqueror Freight Network..." maxlength="1000" rows="3"></textarea>
+                <span class="field-error" id="other_networks-error"></span>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <!-- ── FIELDSET 2: Services & Market ── -->
+          <fieldset class="form-fieldset">
+            <legend class="fieldset-legend">Services &amp; Market</legend>
+            <div class="form-grid">
+
+              <div class="field-group field-full">
+                <label class="field-label">Services Offered</label>
+                <div class="checkbox-group">
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_air_freight">
+                    <span class="checkbox-box"></span>
+                    Air Freight
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_ocean_freight">
+                    <span class="checkbox-box"></span>
+                    Ocean Freight
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_road_freight">
+                    <span class="checkbox-box"></span>
+                    Road Freight
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_rail_freight">
+                    <span class="checkbox-box"></span>
+                    Rail Freight
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_customs_clearance">
+                    <span class="checkbox-box"></span>
+                    Customs Clearance
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_warehousing">
+                    <span class="checkbox-box"></span>
+                    Warehousing
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_project_cargo">
+                    <span class="checkbox-box"></span>
+                    Project Cargo
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_multimodal">
+                    <span class="checkbox-box"></span>
+                    Multimodal
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_courier_express">
+                    <span class="checkbox-box"></span>
+                    Courier &amp; Express
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="services[]" value="svc_dangerous_goods">
+                    <span class="checkbox-box"></span>
+                    Dangerous Goods
+                  </label>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">IATA Member</label>
+                <label class="checkbox-item checkbox-single">
+                  <input type="checkbox" name="iata_member" id="iata_member" value="1">
+                  <span class="checkbox-box"></span>
+                  Yes, we are an IATA member
+                </label>
+              </div>
+
+              <div class="field-group">
+                <label for="principal_market" class="field-label">Principal Market</label>
+                <select id="principal_market" name="principal_market" class="field-input">
+                  <option value="">— Select Country —</option>
+                  <option>Afghanistan</option>
+                  <option>Albania</option>
+                  <option>Algeria</option>
+                  <option>Angola</option>
+                  <option>Argentina</option>
+                  <option>Armenia</option>
+                  <option>Australia</option>
+                  <option>Austria</option>
+                  <option>Azerbaijan</option>
+                  <option>Bahrain</option>
+                  <option>Bangladesh</option>
+                  <option>Belarus</option>
+                  <option>Belgium</option>
+                  <option>Benin</option>
+                  <option>Bolivia</option>
+                  <option>Bosnia and Herzegovina</option>
+                  <option>Brazil</option>
+                  <option>Bulgaria</option>
+                  <option>Cambodia</option>
+                  <option>Cameroon</option>
+                  <option>Canada</option>
+                  <option>Chile</option>
+                  <option>China</option>
+                  <option>Colombia</option>
+                  <option>Congo (DRC)</option>
+                  <option>Costa Rica</option>
+                  <option>Croatia</option>
+                  <option>Cuba</option>
+                  <option>Cyprus</option>
+                  <option>Czech Republic</option>
+                  <option>Denmark</option>
+                  <option>Dominican Republic</option>
+                  <option>Ecuador</option>
+                  <option>Egypt</option>
+                  <option>El Salvador</option>
+                  <option>Estonia</option>
+                  <option>Ethiopia</option>
+                  <option>Finland</option>
+                  <option>France</option>
+                  <option>Georgia</option>
+                  <option>Germany</option>
+                  <option>Ghana</option>
+                  <option>Greece</option>
+                  <option>Guatemala</option>
+                  <option>Honduras</option>
+                  <option>Hong Kong</option>
+                  <option>Hungary</option>
+                  <option>India</option>
+                  <option>Indonesia</option>
+                  <option>Iran</option>
+                  <option>Iraq</option>
+                  <option>Ireland</option>
+                  <option>Israel</option>
+                  <option>Italy</option>
+                  <option>Ivory Coast</option>
+                  <option>Jamaica</option>
+                  <option>Japan</option>
+                  <option>Jordan</option>
+                  <option>Kazakhstan</option>
+                  <option>Kenya</option>
+                  <option>Kuwait</option>
+                  <option>Latvia</option>
+                  <option>Lebanon</option>
+                  <option>Libya</option>
+                  <option>Lithuania</option>
+                  <option>Luxembourg</option>
+                  <option>Malaysia</option>
+                  <option>Malta</option>
+                  <option>Mexico</option>
+                  <option>Moldova</option>
+                  <option>Morocco</option>
+                  <option>Mozambique</option>
+                  <option>Myanmar</option>
+                  <option>Netherlands</option>
+                  <option>New Zealand</option>
+                  <option>Nicaragua</option>
+                  <option>Nigeria</option>
+                  <option>Norway</option>
+                  <option>Oman</option>
+                  <option>Pakistan</option>
+                  <option>Panama</option>
+                  <option>Paraguay</option>
+                  <option>Peru</option>
+                  <option>Philippines</option>
+                  <option>Poland</option>
+                  <option>Portugal</option>
+                  <option>Qatar</option>
+                  <option>Romania</option>
+                  <option>Russia</option>
+                  <option>Saudi Arabia</option>
+                  <option>Senegal</option>
+                  <option>Serbia</option>
+                  <option>Singapore</option>
+                  <option>Slovakia</option>
+                  <option>Slovenia</option>
+                  <option>South Africa</option>
+                  <option>South Korea</option>
+                  <option>Spain</option>
+                  <option>Sri Lanka</option>
+                  <option>Sweden</option>
+                  <option>Switzerland</option>
+                  <option>Taiwan</option>
+                  <option>Tanzania</option>
+                  <option>Thailand</option>
+                  <option>Trinidad and Tobago</option>
+                  <option>Tunisia</option>
+                  <option>Turkey</option>
+                  <option>Ukraine</option>
+                  <option>United Arab Emirates</option>
+                  <option>United Kingdom</option>
+                  <option>United States</option>
+                  <option>Uruguay</option>
+                  <option>Uzbekistan</option>
+                  <option>Venezuela</option>
+                  <option>Vietnam</option>
+                  <option>Yemen</option>
+                  <option>Zimbabwe</option>
+                </select>
+                <span class="field-error" id="principal_market-error"></span>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <!-- ── FIELDSET 3: Key Contact 1 ── -->
+          <fieldset class="form-fieldset">
+            <legend class="fieldset-legend">Key Contact 1</legend>
+            <div class="form-grid">
+
+              <div class="field-group field-narrow">
+                <label for="kc1_prefix" class="field-label">Prefix</label>
+                <select id="kc1_prefix" name="kc1_prefix" class="field-input">
+                  <option value="">—</option>
+                  <option value="Mr">Mr</option>
+                  <option value="Ms">Ms</option>
+                  <option value="Mrs">Mrs</option>
+                </select>
+              </div>
+
+              <div class="field-group field-wide">
+                <label for="kc1_full_name" class="field-label">Full Name <span class="req">*</span></label>
+                <input type="text" id="kc1_full_name" name="kc1_full_name" class="field-input" placeholder="Jane Smith" maxlength="200" required>
+                <span class="field-error" id="kc1_full_name-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="kc1_role" class="field-label">Role / Position</label>
+                <input type="text" id="kc1_role" name="kc1_role" class="field-input" placeholder="General Manager" maxlength="100">
+              </div>
+
+              <div class="field-group">
+                <label for="kc1_email" class="field-label">Email <span class="req">*</span></label>
+                <input type="email" id="kc1_email" name="kc1_email" class="field-input" placeholder="jane@yourcompany.com" maxlength="255" required>
+                <span class="field-error" id="kc1_email-error"></span>
+              </div>
+
+              <div class="field-group field-full">
+                <label for="kc1_phone" class="field-label">Phone <span class="req">*</span></label>
+                <input type="tel" id="kc1_phone" name="kc1_phone" class="field-input" placeholder="+1 305 555 0101" maxlength="50" required>
+                <span class="field-error" id="kc1_phone-error"></span>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <!-- ── FIELDSET 4: Key Contact 2 (collapsed) ── -->
+          <fieldset class="form-fieldset fieldset-collapsible" id="kc2-fieldset">
+            <legend class="fieldset-legend fieldset-legend-toggle" id="kc2-toggle">
+              Key Contact 2
+              <button type="button" class="toggle-btn" id="kc2-btn" aria-expanded="false" aria-controls="kc2-body">
+                <span class="toggle-label-add">+ Add</span>
+                <span class="toggle-label-remove" hidden>− Remove</span>
+              </button>
+            </legend>
+            <div class="fieldset-body" id="kc2-body" hidden>
+              <div class="form-grid">
+
+                <div class="field-group field-narrow">
+                  <label for="kc2_prefix" class="field-label">Prefix</label>
+                  <select id="kc2_prefix" name="kc2_prefix" class="field-input">
+                    <option value="">—</option>
+                    <option value="Mr">Mr</option>
+                    <option value="Ms">Ms</option>
+                    <option value="Mrs">Mrs</option>
+                  </select>
+                </div>
+
+                <div class="field-group field-wide">
+                  <label for="kc2_full_name" class="field-label">Full Name</label>
+                  <input type="text" id="kc2_full_name" name="kc2_full_name" class="field-input" placeholder="John Doe" maxlength="200">
+                  <span class="field-error" id="kc2_full_name-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="kc2_role" class="field-label">Role / Position</label>
+                  <input type="text" id="kc2_role" name="kc2_role" class="field-input" placeholder="Operations Director" maxlength="100">
+                </div>
+
+                <div class="field-group">
+                  <label for="kc2_email" class="field-label">Email</label>
+                  <input type="email" id="kc2_email" name="kc2_email" class="field-input" placeholder="john@yourcompany.com" maxlength="255">
+                  <span class="field-error" id="kc2_email-error"></span>
+                </div>
+
+                <div class="field-group field-full">
+                  <label for="kc2_phone" class="field-label">Phone</label>
+                  <input type="tel" id="kc2_phone" name="kc2_phone" class="field-input" placeholder="+1 305 555 0102" maxlength="50">
+                  <span class="field-error" id="kc2_phone-error"></span>
+                </div>
+
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── FIELDSET 5: Ownership ── -->
+          <fieldset class="form-fieldset">
+            <legend class="fieldset-legend">Ownership</legend>
+            <div class="form-grid">
+
+              <div class="field-group">
+                <label for="owner_full_name" class="field-label">Full Name <span class="req">*</span></label>
+                <input type="text" id="owner_full_name" name="owner_full_name" class="field-input" placeholder="Carlos Pérez" maxlength="200" required>
+                <span class="field-error" id="owner_full_name-error"></span>
+              </div>
+
+              <div class="field-group">
+                <label for="owner_role" class="field-label">Current Role</label>
+                <input type="text" id="owner_role" name="owner_role" class="field-input" placeholder="CEO / Owner" maxlength="100">
+              </div>
+
+              <div class="field-group field-full">
+                <label for="owner_mobile" class="field-label">Mobile Phone <span class="req">*</span></label>
+                <input type="tel" id="owner_mobile" name="owner_mobile" class="field-input" placeholder="+1 305 555 0200" maxlength="50" required>
+                <span class="field-error" id="owner_mobile-error"></span>
+              </div>
+
+            </div>
+          </fieldset>
+
+          <!-- ── FIELDSET 6: Reference Contact 1 (collapsed) ── -->
+          <fieldset class="form-fieldset fieldset-collapsible" id="ref1-fieldset">
+            <legend class="fieldset-legend fieldset-legend-toggle">
+              Reference Contact 1
+              <button type="button" class="toggle-btn" id="ref1-btn" aria-expanded="false" aria-controls="ref1-body">
+                <span class="toggle-label-add">+ Add Reference</span>
+                <span class="toggle-label-remove" hidden>− Remove</span>
+              </button>
+            </legend>
+            <div class="fieldset-body" id="ref1-body" hidden>
+              <div class="form-grid">
+
+                <div class="field-group">
+                  <label for="ref1_company_name" class="field-label">Company Name</label>
+                  <input type="text" id="ref1_company_name" name="ref1_company_name" class="field-input" placeholder="Partner Logistics Co." maxlength="255">
+                  <span class="field-error" id="ref1_company_name-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="ref1_contact_name" class="field-label">Contact Name</label>
+                  <input type="text" id="ref1_contact_name" name="ref1_contact_name" class="field-input" placeholder="Maria Rodriguez" maxlength="200">
+                  <span class="field-error" id="ref1_contact_name-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="ref1_role" class="field-label">Role</label>
+                  <input type="text" id="ref1_role" name="ref1_role" class="field-input" placeholder="Managing Director" maxlength="100">
+                </div>
+
+                <div class="field-group">
+                  <label for="ref1_email" class="field-label">Email</label>
+                  <input type="email" id="ref1_email" name="ref1_email" class="field-input" placeholder="maria@partnerco.com" maxlength="255">
+                  <span class="field-error" id="ref1_email-error"></span>
+                </div>
+
+                <div class="field-group field-full">
+                  <label for="ref1_phone" class="field-label">Phone</label>
+                  <input type="tel" id="ref1_phone" name="ref1_phone" class="field-input" placeholder="+34 91 555 0300" maxlength="50">
+                  <span class="field-error" id="ref1_phone-error"></span>
+                </div>
+
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── FIELDSET 7: Reference Contact 2 (collapsed) ── -->
+          <fieldset class="form-fieldset fieldset-collapsible" id="ref2-fieldset">
+            <legend class="fieldset-legend fieldset-legend-toggle">
+              Reference Contact 2
+              <button type="button" class="toggle-btn" id="ref2-btn" aria-expanded="false" aria-controls="ref2-body">
+                <span class="toggle-label-add">+ Add Reference</span>
+                <span class="toggle-label-remove" hidden>− Remove</span>
+              </button>
+            </legend>
+            <div class="fieldset-body" id="ref2-body" hidden>
+              <div class="form-grid">
+
+                <div class="field-group">
+                  <label for="ref2_company_name" class="field-label">Company Name</label>
+                  <input type="text" id="ref2_company_name" name="ref2_company_name" class="field-input" placeholder="Global Freight Inc." maxlength="255">
+                  <span class="field-error" id="ref2_company_name-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="ref2_contact_name" class="field-label">Contact Name</label>
+                  <input type="text" id="ref2_contact_name" name="ref2_contact_name" class="field-input" placeholder="Ahmed Hassan" maxlength="200">
+                  <span class="field-error" id="ref2_contact_name-error"></span>
+                </div>
+
+                <div class="field-group">
+                  <label for="ref2_role" class="field-label">Role</label>
+                  <input type="text" id="ref2_role" name="ref2_role" class="field-input" placeholder="Operations Manager" maxlength="100">
+                </div>
+
+                <div class="field-group">
+                  <label for="ref2_email" class="field-label">Email</label>
+                  <input type="email" id="ref2_email" name="ref2_email" class="field-input" placeholder="ahmed@globalfreight.com" maxlength="255">
+                  <span class="field-error" id="ref2_email-error"></span>
+                </div>
+
+                <div class="field-group field-full">
+                  <label for="ref2_phone" class="field-label">Phone</label>
+                  <input type="tel" id="ref2_phone" name="ref2_phone" class="field-input" placeholder="+971 4 555 0400" maxlength="50">
+                  <span class="field-error" id="ref2_phone-error"></span>
+                </div>
+
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- ── PRIVACY & SUBMIT ── -->
+          <div class="privacy-submit-block">
+
+            <!-- Honeypot field — visually hidden, must NOT use display:none -->
+            <div class="hp-field" aria-hidden="true">
+              <label for="website_url">Leave this field blank</label>
+              <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="privacy-row">
+              <label class="checkbox-item checkbox-privacy">
+                <input type="checkbox" id="privacy_accepted" name="privacy_accepted" value="1" required>
+                <span class="checkbox-box"></span>
+                <span>I accept the <a href="#" class="privacy-link">Privacy Policy</a> and consent to Bling Network processing my data for membership evaluation.</span>
+              </label>
+              <span class="field-error" id="privacy_accepted-error"></span>
+            </div>
+
+            <div id="form-error" class="form-error-message" hidden>
+              Something went wrong. Please try again or contact us at <a href="mailto:membership@bling-network.com">membership@bling-network.com</a>.
+            </div>
+
+            <button type="submit" id="submit-btn" class="btn-primary btn-submit">
+              <div class="btn-ripple"></div>
+              <span class="btn-label">Apply for Membership →</span>
+              <span class="btn-loading" hidden>
+                <svg class="spinner" viewBox="0 0 24 24" fill="none" width="18" height="18">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.5" stroke-dasharray="40" stroke-dashoffset="30" />
+                </svg>
+                Sending...
+              </span>
+            </button>
+
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer>
+    <img class="footer-logo" src="https://bling-network.com/uploads/Logo-de-Bling-blanco-transparente.png" alt="Bling Network">
+    <div class="footer-social">
+      <a href="https://www.instagram.com/blingnetworkofficial/" aria-label="Instagram">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+        </svg>
+      </a>
+      <a href="https://www.linkedin.com/company/33248171/admin/dashboard/" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        </svg>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61587426698196" aria-label="Facebook">
+        <svg viewBox="0 0 24 24">
+          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+        </svg>
+      </a>
+      <a href="https://www.youtube.com/@blinglogisticsnetwork" aria-label="YouTube">
+        <svg viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+      </a>
+    </div>
+    <div class="footer-links">
+      <a href="index.html" class="footer-link">Home</a>
+      <a href="about.html" class="footer-link">About</a>
+      <a href="benefits.html" class="footer-link">Benefits</a>
+      <a href="social-media.html" class="footer-link">Connect With Us</a>
+      <a href="become-a-member.html" class="footer-link">Become a Member</a>
+      <a href="https://blinglogisticsnetwork.com/costa-rica-registration-form/" target="_blank" class="footer-link">Register — Bling Summit Costa Rica 2026</a>
+    </div>
+    <p class="footer-copy">© 2026 Bling Network. All rights reserved.</p>
+  </footer>
+
+  <!-- ── SCRIPTS ─────────────────────────────────────────── -->
+  <script src="js/base.js"></script>
+  <script src="js/become-a-member.js"></script>
+
+</body>
+
+</html>
