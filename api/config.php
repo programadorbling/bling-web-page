@@ -23,17 +23,17 @@ define('SMTP_FROM_NAME', 'Bling Network Developer Enviroment');
 // Add all staff emails that should receive new membership notifications
 define('NOTIFY_EMAILS', [
     'programador@blinglogisticsnetwork.com',
-    'prodigitalwebs@gmail.com',
+    'prodigitalwebs@gmail.com'
 ]);
 
 // ── reCAPTCHA v3 ─────────────────────────────────────────
-define('RECAPTCHA_SECRET',    'YOUR_RECAPTCHA_SECRET_KEY');
+define('RECAPTCHA_SECRET',    '6LehcbwsAAAAANbXH-ssn1EaIV6xfeHBElVYGdSt');
 define('RECAPTCHA_MIN_SCORE', 0.5);
 
 // ── Rate limiting ─────────────────────────────────────────
-define('RATE_LIMIT_MAX',    3);   // max submissions
+define('RATE_LIMIT_MAX',    50);   // max submissions
 define('RATE_LIMIT_WINDOW', 10);  // minutes
 
 // ── App ───────────────────────────────────────────────────
-define('APP_ENV', 'development');  // 'development' | 'production'
-define('APP_URL', '');
+define('APP_ENV', 'production');  // 'development' | 'production'
+define('APP_URL', 'https://bling-network.com');

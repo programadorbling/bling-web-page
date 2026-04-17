@@ -3,7 +3,7 @@
    Depends on: js/base.js (initCursorHover, observeReveal)
    ═══════════════════════════════════════════════════════════ */
 
-const RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MFLZFpku';
+const RECAPTCHA_SITE_KEY = '6LehcbwsAAAAAAcyBKJVr0Ud4q4Xd5NI-Tb2_nnl';
 const API_ENDPOINT       = 'api/submit-membership.php';
 
 const PHONE_RE = /^[\d\s\+\-\(\)]{7,}$/;

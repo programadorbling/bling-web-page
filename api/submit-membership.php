@@ -1,9 +1,16 @@
 <?php
+
 declare(strict_types=1);
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 // 1. BOOTSTRAP ────────────────────────────────────────────────────────────────
 define('BLING_APP', true);
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -214,10 +221,8 @@ if ($website !== '') {
 }
 
 $numberOfEmployees = sv($data['number_of_employees'] ?? null);
-if ($numberOfEmployees !== '') {
-    if (!ctype_digit($numberOfEmployees) || (int)$numberOfEmployees < 1) {
-        $errors['number_of_employees'] = 'Number of employees must be a positive integer.';
-    }
+if ($numberOfEmployees !== '' && strlen($numberOfEmployees) > 50) {
+    $errors['number_of_employees'] = 'Number of employees value is too long.';
 }
 
 $establishedDate = sv($data['established_date'] ?? null);
@@ -667,6 +672,204 @@ try {
     exit(json_encode(['status' => 'error', 'message' => 'Server error.']));
 }
 
-// Steps 10–11 (email notifications) will be implemented in Milestone 4.
+// 10. INTERNAL NOTIFICATION EMAIL ────────────────────────────────────────────
+
+function buildServicesLabel(array $servicesMap): string
+{
+    $labels = [
+        'svc_air_freight'     => 'Air Freight',
+        'svc_ocean_freight'   => 'Ocean Freight',
+        'svc_road_freight'    => 'Road Freight',
+        'svc_rail_freight'    => 'Rail Freight',
+        'svc_customs_clearance' => 'Customs Clearance',
+        'svc_warehousing'     => 'Warehousing',
+        'svc_project_cargo'   => 'Project Cargo',
+        'svc_multimodal'      => 'Multimodal',
+        'svc_courier_express' => 'Courier & Express',
+        'svc_dangerous_goods' => 'Dangerous Goods',
+    ];
+    $checked = [];
+    foreach ($labels as $key => $label) {
+        if (!empty($servicesMap[$key])) {
+            $checked[] = $label;
+        }
+    }
+    return $checked ? implode(', ', $checked) : '—';
+}
+
+function emailRow(string $label, ?string $value): string
+{
+    $v = ($value !== null && $value !== '') ? htmlspecialchars($value, ENT_QUOTES, 'UTF-8') : '—';
+    return '<tr>'
+        . '<td style="font-family:Arial,sans-serif;font-weight:bold;color:#333333;width:40%;padding:6px 8px;vertical-align:top;">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . '</td>'
+        . '<td style="font-family:Arial,sans-serif;color:#555555;padding:6px 8px;">' . $v . '</td>'
+        . '</tr>';
+}
+
+function emailSection(string $heading, string $rows): string
+{
+    return '<h3 style="font-family:Arial,sans-serif;color:#030081;font-weight:bold;border-bottom:2px solid #d1d70d;padding-bottom:6px;margin-bottom:12px;margin-top:24px;">'
+        . htmlspecialchars($heading, ENT_QUOTES, 'UTF-8') . '</h3>'
+        . '<table width="100%" cellpadding="0" cellspacing="0" border="0">' . $rows . '</table>';
+}
+
+$emailHeader = '<div style="background:#030081;padding:32px;text-align:center;">'
+    . '<img src="https://bling-network.com/uploads/Logo-de-Bling-2026_Transparencia.png" alt="Bling Network" style="max-width:180px;height:auto;">'
+    . '</div>';
+
+$emailFooter = '<div style="background:#030081;color:rgba(255,255,255,0.6);font-size:12px;font-family:Arial,sans-serif;text-align:center;padding:20px;">'
+    . '&copy; 2026 Bling Network. All rights reserved.'
+    . '</div>';
+
+$submittedAt = date('Y-m-d H:i:s');
+
+// Build service list label for display
+$servicesLabel = buildServicesLabel($servicesMap);
+
+// ── Internal email body ───────────────────────────────────────────────────────
+$companyRows = emailRow('Company Name', $s_companyName)
+    . emailRow('Country', $s_country)
+    . emailRow('City', $s_city)
+    . emailRow('Address', $s_address)
+    . emailRow('Company Phone', $s_companyPhone)
+    . emailRow('ZIP Code', $s_zipCode)
+    . emailRow('Website', $s_website)
+    . emailRow('Employees', $s_numberOfEmployees)
+    . emailRow('Established', $s_establishedDate)
+    . emailRow('Other Networks', $s_otherNetworks);
+
+$servicesRows = emailRow('Services Offered', $servicesLabel)
+    . emailRow('IATA Member', ($iataMember === true) ? 'Yes' : 'No')
+    . emailRow('Principal Market', $s_principalMarket);
+
+$kc1Rows = emailRow('Name', trim(($s_kc1Prefix !== null ? $s_kc1Prefix . ' ' : '') . $s_kc1FullName))
+    . emailRow('Role', $s_kc1Role)
+    . emailRow('Email', $s_kc1Email)
+    . emailRow('Phone', $s_kc1Phone);
+
+$ownerRows = emailRow('Name', $s_ownerFullName)
+    . emailRow('Role', $s_ownerRole)
+    . emailRow('Mobile', $s_ownerMobile);
+
+$internalBody = '<div style="background:#f5f5f5;padding:24px 0;">'
+    . '<div style="max-width:600px;margin:0 auto;background:#ffffff;">'
+    . $emailHeader
+    . '<div style="padding:24px 32px;">'
+    . '<h1 style="font-family:Arial,sans-serif;color:#030081;margin-top:0;">New Membership Application</h1>'
+    . '<p style="font-family:Arial,sans-serif;color:#555555;font-size:13px;">Submitted on ' . $submittedAt . ' &nbsp;·&nbsp; IP: ' . htmlspecialchars($clientIp, ENT_QUOTES, 'UTF-8') . ' &nbsp;·&nbsp; reCAPTCHA score: ' . ($recaptchaScore !== null ? $recaptchaScore : 'n/a') . '</p>'
+    . emailSection('Company Information', $companyRows)
+    . emailSection('Services &amp; Market', $servicesRows)
+    . emailSection('Key Contact 1', $kc1Rows);
+
+if ($kc2FullName !== '') {
+    $kc2Rows = emailRow('Name', trim(($s_kc2Prefix !== null ? $s_kc2Prefix . ' ' : '') . ($s_kc2FullName ?? '')))
+        . emailRow('Role', $s_kc2Role)
+        . emailRow('Email', $s_kc2Email)
+        . emailRow('Phone', $s_kc2Phone);
+    $internalBody .= emailSection('Key Contact 2', $kc2Rows);
+}
+
+$internalBody .= emailSection('Ownership', $ownerRows);
+
+if ($ref1CompanyName !== '') {
+    $ref1Rows = emailRow('Company', $s_ref1CompanyName)
+        . emailRow('Contact', $s_ref1ContactName)
+        . emailRow('Role', $s_ref1Role)
+        . emailRow('Phone', $s_ref1Phone)
+        . emailRow('Email', $s_ref1Email);
+    $internalBody .= emailSection('Reference 1', $ref1Rows);
+}
+
+if ($ref2CompanyName !== '') {
+    $ref2Rows = emailRow('Company', $s_ref2CompanyName)
+        . emailRow('Contact', $s_ref2ContactName)
+        . emailRow('Role', $s_ref2Role)
+        . emailRow('Phone', $s_ref2Phone)
+        . emailRow('Email', $s_ref2Email);
+    $internalBody .= emailSection('Reference 2', $ref2Rows);
+}
+
+$internalBody .= '<p style="font-family:Arial,sans-serif;color:#888888;font-size:12px;margin-top:24px;">Reply directly to this email to contact the applicant (Reply-To: ' . htmlspecialchars($s_kc1Email, ENT_QUOTES, 'UTF-8') . ').</p>'
+    . '</div>'
+    . $emailFooter
+    . '</div>'
+    . '</div>';
+
+try {
+    $mailerInternal = new PHPMailer(true);
+    $mailerInternal->isSMTP();
+    $mailerInternal->SMTPDebug  = 0;
+    $mailerInternal->Host       = SMTP_HOST;
+    $mailerInternal->Port       = SMTP_PORT;
+    $mailerInternal->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mailerInternal->SMTPAuth   = true;
+    $mailerInternal->Username   = SMTP_USER;
+    $mailerInternal->Password   = SMTP_PASS;
+    $mailerInternal->setFrom(SMTP_FROM, SMTP_FROM_NAME);
+    $mailerInternal->addReplyTo($s_kc1Email, $s_kc1FullName);
+    foreach (NOTIFY_EMAILS as $notifyAddr) {
+        $mailerInternal->addAddress($notifyAddr);
+    }
+    $mailerInternal->isHTML(true);
+    $mailerInternal->CharSet = 'UTF-8';
+    $mailerInternal->Subject = '[New Membership Application] ' . $s_companyName . ' — ' . $s_country;
+    $mailerInternal->Body    = $internalBody;
+    $mailerInternal->AltBody = 'New membership application from ' . $s_companyName . ' (' . $s_country . '). Contact: ' . $s_kc1FullName . ' <' . $s_kc1Email . '>.';
+    $mailerInternal->send();
+} catch (PHPMailerException $e) {
+    error_log('[membership] Email failed (internal notification, request_id=' . $requestId . '): ' . $e->getMessage());
+}
+
+// 11. APPLICANT CONFIRMATION EMAIL ────────────────────────────────────────────
+$ctaButton = '<p style="text-align:center;margin:28px 0;">'
+    . '<a href="https://bling-network.com/benefits.html" style="background:#d1d70d;color:#030081;font-family:Arial,sans-serif;font-weight:bold;padding:14px 28px;border-radius:6px;text-decoration:none;display:inline-block;">Explore Benefits &rarr;</a>'
+    . '</p>';
+
+$confirmationBody = '<div style="background:#f5f5f5;padding:24px 0;">'
+    . '<div style="max-width:600px;margin:0 auto;background:#ffffff;">'
+    . $emailHeader
+    . '<div style="padding:24px 32px;">'
+    . '<h1 style="font-family:Arial,sans-serif;color:#030081;margin-top:0;">Thank you, ' . htmlspecialchars($s_kc1FullName, ENT_QUOTES, 'UTF-8') . '!</h1>'
+    . '<p style="font-family:Arial,sans-serif;color:#555555;">We have received your membership application for <strong>' . htmlspecialchars($s_companyName, ENT_QUOTES, 'UTF-8') . '</strong>. Our team will review your request and contact you at ' . htmlspecialchars($s_kc1Email, ENT_QUOTES, 'UTF-8') . ' within 2–3 business days.</p>'
+    . '<div style="background:#f0f0f0;border-radius:8px;padding:16px 20px;margin:20px 0;">'
+    . '<table width="100%" cellpadding="0" cellspacing="0" border="0">'
+    . emailRow('Application Reference', '#' . $requestId)
+    . emailRow('Company', $s_companyName)
+    . emailRow('Primary Contact', $s_kc1FullName)
+    . emailRow('Submitted', $submittedAt)
+    . '</table>'
+    . '</div>'
+    . '<p style="font-family:Arial,sans-serif;color:#555555;">In the meantime, feel free to explore our upcoming events and learn more about the benefits of being a Bling Network member.</p>'
+    . $ctaButton
+    . '</div>'
+    . '<div style="background:#030081;color:rgba(255,255,255,0.6);font-size:12px;font-family:Arial,sans-serif;text-align:center;padding:20px;">'
+    . '<p style="margin:0 0 8px;">Questions? Contact us at <a href="mailto:membership@bling-network.com" style="color:#d1d70d;">membership@bling-network.com</a></p>'
+    . '<p style="margin:0;">&copy; 2026 Bling Network. All rights reserved.</p>'
+    . '</div>'
+    . '</div>'
+    . '</div>';
+
+try {
+    $mailerConfirm = new PHPMailer(true);
+    $mailerConfirm->isSMTP();
+    $mailerConfirm->SMTPDebug  = 0;
+    $mailerConfirm->Host       = SMTP_HOST;
+    $mailerConfirm->Port       = SMTP_PORT;
+    $mailerConfirm->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mailerConfirm->SMTPAuth   = true;
+    $mailerConfirm->Username   = SMTP_USER;
+    $mailerConfirm->Password   = SMTP_PASS;
+    $mailerConfirm->setFrom(SMTP_FROM, SMTP_FROM_NAME);
+    $mailerConfirm->addAddress($s_kc1Email, $s_kc1FullName);
+    $mailerConfirm->isHTML(true);
+    $mailerConfirm->CharSet = 'UTF-8';
+    $mailerConfirm->Subject = 'We received your application — Bling Network';
+    $mailerConfirm->Body    = $confirmationBody;
+    $mailerConfirm->AltBody = 'Thank you, ' . $s_kc1FullName . '. We have received your membership application for ' . $s_companyName . '. Our team will review your request and contact you within 2-3 business days. Application Reference: #' . $requestId . '.';
+    $mailerConfirm->send();
+} catch (PHPMailerException $e) {
+    error_log('[membership] Email failed (applicant confirmation, request_id=' . $requestId . '): ' . $e->getMessage());
+}
+
 http_response_code(200);
 exit(json_encode(['status' => 'success', 'message' => 'Application received.']));

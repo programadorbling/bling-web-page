@@ -1,2 +1,3 @@
-Order deny,allow
-Deny from all
+RewriteEngine On
+RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
+RewriteRule ^ - [F,L]
