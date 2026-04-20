@@ -5,12 +5,32 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 // 1. BOOTSTRAP ────────────────────────────────────────────────────────────────
 define('BLING_APP', true);
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/../vendor/autoload.php';
+
+/**
+ * Append one line to MEMBERSHIP_MAIL_LOG. Falls back to PHP’s default error_log if the file is not writable.
+ */
+function membership_mail_log(string $message): void
+{
+    $line = '[' . date('Y-m-d\TH:i:sP') . '] ' . $message . "\n";
+    if (!defined('MEMBERSHIP_MAIL_LOG') || MEMBERSHIP_MAIL_LOG === '') {
+        error_log('[membership] ' . trim($line));
+        return;
+    }
+    $path = MEMBERSHIP_MAIL_LOG;
+    $dir  = dirname($path);
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+    $ok = @error_log($line, 3, $path);
+    if ($ok === false) {
+        error_log('[membership] mail log write failed path=' . $path . ' msg=' . trim($line));
+    }
+}
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -816,7 +836,17 @@ try {
     $mailerInternal->Body    = $internalBody;
     $mailerInternal->AltBody = 'New membership application from ' . $s_companyName . ' (' . $s_country . '). Contact: ' . $s_kc1FullName . ' <' . $s_kc1Email . '>.';
     $mailerInternal->send();
-} catch (PHPMailerException $e) {
+    membership_mail_log(
+        'OK internal_notification request_id=' . $requestId
+        . ' recipients=' . implode(',', NOTIFY_EMAILS)
+    );
+} catch (Throwable $e) {
+    $info = isset($mailerInternal) ? $mailerInternal->ErrorInfo : '';
+    membership_mail_log(
+        'FAIL internal_notification request_id=' . $requestId
+        . ' exception=' . $e->getMessage()
+        . ($info !== '' ? ' PHPMailer_ErrorInfo=' . $info : '')
+    );
     error_log('[membership] Email failed (internal notification, request_id=' . $requestId . '): ' . $e->getMessage());
 }
 
@@ -867,7 +897,17 @@ try {
     $mailerConfirm->Body    = $confirmationBody;
     $mailerConfirm->AltBody = 'Thank you, ' . $s_kc1FullName . '. We have received your membership application for ' . $s_companyName . '. Our team will review your request and contact you within 2-3 business days. Application Reference: #' . $requestId . '.';
     $mailerConfirm->send();
-} catch (PHPMailerException $e) {
+    membership_mail_log(
+        'OK applicant_confirmation request_id=' . $requestId
+        . ' to=' . $s_kc1Email
+    );
+} catch (Throwable $e) {
+    $info = isset($mailerConfirm) ? $mailerConfirm->ErrorInfo : '';
+    membership_mail_log(
+        'FAIL applicant_confirmation request_id=' . $requestId
+        . ' exception=' . $e->getMessage()
+        . ($info !== '' ? ' PHPMailer_ErrorInfo=' . $info : '')
+    );
     error_log('[membership] Email failed (applicant confirmation, request_id=' . $requestId . '): ' . $e->getMessage());
 }
 

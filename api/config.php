@@ -34,6 +34,12 @@ define('RECAPTCHA_MIN_SCORE', 0.5);
 define('RATE_LIMIT_MAX',    50);   // max submissions
 define('RATE_LIMIT_WINDOW', 10);  // minutes
 
+// ── Membership mail log (path under project root; easy access via FTP on IONOS) ──
+define(
+    'MEMBERSHIP_MAIL_LOG',
+    dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'membership-mail.log'
+);
+
 // ── App ───────────────────────────────────────────────────
-define('APP_ENV', 'production');  // 'development' | 'production'
-define('APP_URL', 'https://bling-network.com');
+define('APP_ENV', 'development');  // 'development' | 'production'
+define('APP_URL', 'bling-wep-page.test');

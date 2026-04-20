@@ -1,0 +1,4 @@
+# Deny HTTP access to mail logs and any other files in this directory
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
